@@ -106,7 +106,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="Cassandra,MongoDB,">
 
 
 
@@ -117,16 +117,18 @@
 
 
 
-<meta name="description" content="Never Settle">
-<meta property="og:type" content="website">
-<meta property="og:title" content="renhexin&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="介绍CassandraApache Cassandra 是一种分布式非关系型数据库，具有高性能、可扩展、无中心化等特征。Cassandra 是适用于社交网络业务场景的数据库，适合实时事务处理和提供交互型数据。以 Amazon 完全分布式的 Dynamo 数据库作为基础，结合 Google BigTable 基于列族（Column Family）的数据模型，实现 P2P 去中心化的存储。  CAP">
+<meta name="keywords" content="Cassandra,MongoDB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cassandra与MongoDB对比">
+<meta property="og:url" content="http://yoursite.com/2019/04/17/mongo与cassandra对比/index.html">
 <meta property="og:site_name" content="renhexin&#39;s blog">
-<meta property="og:description" content="Never Settle">
+<meta property="og:description" content="介绍CassandraApache Cassandra 是一种分布式非关系型数据库，具有高性能、可扩展、无中心化等特征。Cassandra 是适用于社交网络业务场景的数据库，适合实时事务处理和提供交互型数据。以 Amazon 完全分布式的 Dynamo 数据库作为基础，结合 Google BigTable 基于列族（Column Family）的数据模型，实现 P2P 去中心化的存储。  CAP">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-06T15:15:01.088Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="renhexin&#39;s blog">
-<meta name="twitter:description" content="Never Settle">
+<meta name="twitter:title" content="Cassandra与MongoDB对比">
+<meta name="twitter:description" content="介绍CassandraApache Cassandra 是一种分布式非关系型数据库，具有高性能、可扩展、无中心化等特征。Cassandra 是适用于社交网络业务场景的数据库，适合实时事务处理和提供交互型数据。以 Amazon 完全分布式的 Dynamo 数据库作为基础，结合 Google BigTable 基于列族（Column Family）的数据模型，实现 P2P 去中心化的存储。  CAP">
 
 
 
@@ -156,13 +158,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/">
+  <link rel="canonical" href="http://yoursite.com/2019/04/17/mongo与cassandra对比/">
 
 
 
 
 
-  <title>renhexin's blog</title>
+  <title>Cassandra与MongoDB对比 | renhexin's blog</title>
   
 
 
@@ -181,8 +183,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -275,9 +276,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -307,9 +308,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/17/mongo与cassandra对比/" itemprop="url">Cassandra与MongoDB对比</a></h1>
+          <h1 class="post-title" itemprop="name headline">Cassandra与MongoDB对比</h1>
         
 
         <div class="post-meta">
@@ -381,9 +380,7 @@
       
 
       
-        
-          
-            <h2 id="介绍Cassandra"><a href="#介绍Cassandra" class="headerlink" title="介绍Cassandra"></a>介绍Cassandra</h2><p>Apache Cassandra 是一种分布式非关系型数据库，具有高性能、可扩展、无中心化等特征。Cassandra 是适用于社交网络业务场景的数据库，适合实时事务处理和提供交互型数据。以 Amazon 完全分布式的 Dynamo 数据库作为基础，结合 Google BigTable 基于列族（Column Family）的数据模型，实现 P2P 去中心化的存储。</p>
+        <h2 id="介绍Cassandra"><a href="#介绍Cassandra" class="headerlink" title="介绍Cassandra"></a>介绍Cassandra</h2><p>Apache Cassandra 是一种分布式非关系型数据库，具有高性能、可扩展、无中心化等特征。Cassandra 是适用于社交网络业务场景的数据库，适合实时事务处理和提供交互型数据。以 Amazon 完全分布式的 Dynamo 数据库作为基础，结合 Google BigTable 基于列族（Column Family）的数据模型，实现 P2P 去中心化的存储。</p>
 <blockquote>
 <p><strong>CAP 定理</strong>，指的是在一个分布式系统中，Consistency 一致性、Availability 可用性、Partition Tolerance 分区容错性，三者不可得兼</p>
 </blockquote>
@@ -438,8 +435,6 @@
 <p>一般的看法是，尽管NoSQL数据库提供了线性写伸缩性和高容错性，但是事务保证的丢失使它们不适合关键任务数据。</p>
 <h2 id="SQL-Vs-NoSQL-为什么都需要"><a href="#SQL-Vs-NoSQL-为什么都需要" class="headerlink" title="SQL Vs NoSQL, 为什么都需要"></a>SQL Vs NoSQL, 为什么都需要</h2><p>亚马逊(Amazon.com)、Netflix、优步(Uber)和Airbnb等拥有丰富用户体验的实际应用程序，都是由多种工作负载的复杂混合提供内部支持的。例如，像Amazon.com这样的电子商务应用程序需要存储低数据量、高任务关键度的数据，如用户、产品、订单、发票，以及高容量、低任务关键度的数据，如产品评论、帮助台消息、用户活动、用户推荐。自然，这些应用程序依赖于至少一个SQL数据库和至少一个NoSQL数据库。在多区域和全局部署中，NoSQL数据库还充当存储在数据源中的数据的地理分布式缓存，SQL数据库运行在单个区域。</p>
 
-          
-        
       
     </div>
     
@@ -454,14 +449,22 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Cassandra/" rel="tag"># Cassandra</a>
+          
+            <a href="/tags/MongoDB/" rel="tag"># MongoDB</a>
+          
+        </div>
+      
+
+      
+      
+      
 
       
 
       
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -471,10 +474,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -482,6 +486,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -502,8 +510,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -563,6 +580,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍Cassandra"><span class="nav-number">1.</span> <span class="nav-text">介绍Cassandra</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cassandra-特点"><span class="nav-number">2.</span> <span class="nav-text">Cassandra 特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cassandra与Mongo数据结构对比"><span class="nav-number">3.</span> <span class="nav-text">Cassandra与Mongo数据结构对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cassandra与Mongo索引结构对比"><span class="nav-number">4.</span> <span class="nav-text">Cassandra与Mongo索引结构对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cassandra与Mongo部署方式对比"><span class="nav-number">5.</span> <span class="nav-text">Cassandra与Mongo部署方式对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cassandra与Mongo集群复制机制对比"><span class="nav-number">6.</span> <span class="nav-text">Cassandra与Mongo集群复制机制对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL与NoSQL数据模型的区别"><span class="nav-number">7.</span> <span class="nav-text">SQL与NoSQL数据模型的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL-Vs-NoSQL-为什么都需要"><span class="nav-number">8.</span> <span class="nav-text">SQL Vs NoSQL, 为什么都需要</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -699,6 +732,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
