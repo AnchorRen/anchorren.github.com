@@ -125,7 +125,7 @@
 <meta property="og:site_name" content="renhexin&#39;s blog">
 <meta property="og:description" content="介绍CassandraApache Cassandra 是一种分布式非关系型数据库，具有高性能、可扩展、无中心化等特征。Cassandra 是适用于社交网络业务场景的数据库，适合实时事务处理和提供交互型数据。以 Amazon 完全分布式的 Dynamo 数据库作为基础，结合 Google BigTable 基于列族（Column Family）的数据模型，实现 P2P 去中心化的存储。  CAP">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-05-06T15:15:01.088Z">
+<meta property="og:updated_time" content="2019-05-07T11:16:59.897Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra与MongoDB对比">
 <meta name="twitter:description" content="介绍CassandraApache Cassandra 是一种分布式非关系型数据库，具有高性能、可扩展、无中心化等特征。Cassandra 是适用于社交网络业务场景的数据库，适合实时事务处理和提供交互型数据。以 Amazon 完全分布式的 Dynamo 数据库作为基础，结合 Google BigTable 基于列族（Column Family）的数据模型，实现 P2P 去中心化的存储。  CAP">
@@ -392,11 +392,12 @@
 <li><strong>通过分布式 hash 表放置数据</strong>：在默认分区策略中，每个节点都对应一个 hash 值，用于存储一定范围内的分区键的数据。</li>
 <li><strong>可插拔的分区</strong>：可添加或者删除节点，但是保证数据不会丢失。</li>
 <li><strong>可配置的放置策略</strong>：可配置不同的策略用于分布副本。</li>
-<li><strong>可配置的一致性</strong>：对读写操作均可配置不同的一致性级别。</li>
-</ul>
+<li><p><strong>可配置的一致性</strong>：对读写操作均可配置不同的一致性级别。</p>
+<a id="more"></a>
 <p>Cassandra 的类 BigTable 特性有以下几点：</p>
-<ul>
-<li><strong>列族数据模型</strong>：列族作为列的容器，是一个四维哈希表。</li>
+</li>
+<li><p><strong>列族数据模型</strong>：列族作为列的容器，是一个四维哈希表。</p>
+</li>
 <li><strong>SSTable 磁盘存储</strong>：SSTable 为磁盘上的存储文件，只读，多个 SSTable 可进行合并操作。</li>
 <li><strong>Commit log 持久化</strong>：数据首先会写入 Commit log，提供持久化。</li>
 <li><strong>Memtable 缓存</strong>：数据进行持久化时，也同时写入 memtable 进行缓存，达到队列最大值时，顺序刷入磁盘。</li>
@@ -557,7 +558,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

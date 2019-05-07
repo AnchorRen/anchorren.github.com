@@ -382,8 +382,7 @@
 
       
         
-          
-            <h2 id="介绍Cassandra"><a href="#介绍Cassandra" class="headerlink" title="介绍Cassandra"></a>介绍Cassandra</h2><p>Apache Cassandra 是一种分布式非关系型数据库，具有高性能、可扩展、无中心化等特征。Cassandra 是适用于社交网络业务场景的数据库，适合实时事务处理和提供交互型数据。以 Amazon 完全分布式的 Dynamo 数据库作为基础，结合 Google BigTable 基于列族（Column Family）的数据模型，实现 P2P 去中心化的存储。</p>
+          <h2 id="介绍Cassandra"><a href="#介绍Cassandra" class="headerlink" title="介绍Cassandra"></a>介绍Cassandra</h2><p>Apache Cassandra 是一种分布式非关系型数据库，具有高性能、可扩展、无中心化等特征。Cassandra 是适用于社交网络业务场景的数据库，适合实时事务处理和提供交互型数据。以 Amazon 完全分布式的 Dynamo 数据库作为基础，结合 Google BigTable 基于列族（Column Family）的数据模型，实现 P2P 去中心化的存储。</p>
 <blockquote>
 <p><strong>CAP 定理</strong>，指的是在一个分布式系统中，Consistency 一致性、Availability 可用性、Partition Tolerance 分区容错性，三者不可得兼</p>
 </blockquote>
@@ -395,53 +394,17 @@
 <li><strong>通过分布式 hash 表放置数据</strong>：在默认分区策略中，每个节点都对应一个 hash 值，用于存储一定范围内的分区键的数据。</li>
 <li><strong>可插拔的分区</strong>：可添加或者删除节点，但是保证数据不会丢失。</li>
 <li><strong>可配置的放置策略</strong>：可配置不同的策略用于分布副本。</li>
-<li><strong>可配置的一致性</strong>：对读写操作均可配置不同的一致性级别。</li>
-</ul>
-<p>Cassandra 的类 BigTable 特性有以下几点：</p>
-<ul>
-<li><strong>列族数据模型</strong>：列族作为列的容器，是一个四维哈希表。</li>
-<li><strong>SSTable 磁盘存储</strong>：SSTable 为磁盘上的存储文件，只读，多个 SSTable 可进行合并操作。</li>
-<li><strong>Commit log 持久化</strong>：数据首先会写入 Commit log，提供持久化。</li>
-<li><strong>Memtable 缓存</strong>：数据进行持久化时，也同时写入 memtable 进行缓存，达到队列最大值时，顺序刷入磁盘。</li>
-</ul>
-<h2 id="Cassandra与Mongo数据结构对比"><a href="#Cassandra与Mongo数据结构对比" class="headerlink" title="Cassandra与Mongo数据结构对比"></a>Cassandra与Mongo数据结构对比</h2><ul>
-<li>MongoDB使用文档型存储，其数据结构为与JSON类似的BSON结构。</li>
-<li>而Cassandra支持的是key-value式存储，而每个key-value还会保存一个时间戳，这个时间戳实际上起到了版本控制的作用。</li>
-</ul>
-<h2 id="Cassandra与Mongo索引结构对比"><a href="#Cassandra与Mongo索引结构对比" class="headerlink" title="Cassandra与Mongo索引结构对比"></a>Cassandra与Mongo索引结构对比</h2><ul>
-<li>MongoDB的索引几乎与<a href="https://cloud.tencent.com/product/cdb-overview" target="_blank" rel="noopener">关系型数据库</a>完全一样，其<code>普通索引</code>、<code>联合索引</code>、<code>唯一索引</code>的意义和实现上都可以参考对MySQL索引的理解。</li>
-<li>Cassandra由于其是一个<code>key-value</code>结构的存储，如果你要对value进行条件查找，那么就必须建立<code>反向索引</code>，重新建立一个value- key的键值对。</li>
-</ul>
-<h2 id="Cassandra与Mongo部署方式对比"><a href="#Cassandra与Mongo部署方式对比" class="headerlink" title="Cassandra与Mongo部署方式对比"></a>Cassandra与Mongo部署方式对比</h2><ul>
-<li>MongoDB提供了Replica Sets的高可用部署方式，配置好RS的节点后，整个集群会自动选举出Primary机器供写入操作，并自动复制数据到其它节点。它还具有故障后自动选举 新的主机的机制。</li>
-<li>而Cassandra提供的策略更为灵活，它通过一种对网络结构可感知的机制，它让你可以配置数据是备份在本地网络中的其它节点还是备份 到远端的数据中心。</li>
-</ul>
-<h2 id="Cassandra与Mongo集群复制机制对比"><a href="#Cassandra与Mongo集群复制机制对比" class="headerlink" title="Cassandra与Mongo集群复制机制对比"></a>Cassandra与Mongo集群复制机制对比</h2><ul>
-<li><code>Cassandra</code>：是开箱即用的复制。你只需指定数据复制到的节点的数量，然后它将处理流程的其余部分。而且Cassandra允许集群中的多个主机，丢失一个节点仍然可以向集群写入。这可以允许更好的容错，而不需要MongoDB所需的10到40秒停机时间。</li>
-<li><code>MongoDB</code>:  MongoDB具有内置的自动选择复制功能。这允许您设置一个辅助数据库，如果主数据库不可用，则可以自动选择该辅助数据库。但是，MongoDB需要一些设置(可能还需要一些来自支持的帮助)来进行复制。MongoDB有副本集，其中一个成员是主成员，所有其他成员都是辅助角色。读和写首先提交到主节点，然后复制到辅助副本。MongoDB只有一个主服务器。虽然自动选择过程是自动发生的，但可能需要10到40秒。当这种情况发生时，您不能写入副本集。</li>
-</ul>
-<h2 id="SQL与NoSQL数据模型的区别"><a href="#SQL与NoSQL数据模型的区别" class="headerlink" title="SQL与NoSQL数据模型的区别"></a>SQL与NoSQL数据模型的区别</h2><blockquote>
-<p>SQL数据库通过ACID（Atomicity, Consistency, Isolation, and Durability）事务保证，以及在定义好的规范化关系数据模型的基础上，支持以不可预见的方式使用连接查询数据的能力，提高了应用程序的灵活性。</p>
-<p>关系型模型是一个简单的模型，需要满足 ACID。ACID 是 Atomic、Consistent、Isolated、Durable 的简称。</p>
-<ul>
-<li>Atomic：”All or Nothing”。</li>
-<li>Consistent：意味着数据从一个正确的状态移动到了另一个正确的状态，不可能读到不同的值。</li>
-<li>Isolated：交易之间不会互相干扰。</li>
-<li>Durable：一旦交易完成，更高的数据不会丢失。</li>
-</ul>
-</blockquote>
-<p>由于关系型数据库单节点体系结构和使用主从复制模型实现冗余，传统SQL数据库缺少两个重要功能——线性写可伸缩性(即跨多个节点的自动分片)，和自动的零数据丢失故障转移。这意味着SQL接收的数据量不能超过单个节点的最大写吞吐量。此外，由于最近的提交还没有出现在从副本上，所以在故障转移(在共享无存储体系结构上)时应该预料到一些临时数据丢失。在SQL数据库世界中，实现零停机升级也是非常困难的。</p>
-<p>NoSQL DBs在本质上通常是分布式的，数据在多个节点之间进行分区或分片。它们强制进行去正规化，这意味着插入的数据也需要多次复制，以满足您心中的特定查询。NoSQL首要目标是通过显式地减少读取期间访问的碎片数量来提取高性能。因此，NoSQL要求您对查询建模，而SQL要求您对数据建模。</p>
-<blockquote>
-<p>NoSQL专注于在分布式集群上实现高性能，这被认为是多种数据建模折衷的主要原理，包括丢失ACID事务、连接和一致的全局辅助索引。</p>
-</blockquote>
-<p>一般的看法是，尽管NoSQL数据库提供了线性写伸缩性和高容错性，但是事务保证的丢失使它们不适合关键任务数据。</p>
-<h2 id="SQL-Vs-NoSQL-为什么都需要"><a href="#SQL-Vs-NoSQL-为什么都需要" class="headerlink" title="SQL Vs NoSQL, 为什么都需要"></a>SQL Vs NoSQL, 为什么都需要</h2><p>亚马逊(Amazon.com)、Netflix、优步(Uber)和Airbnb等拥有丰富用户体验的实际应用程序，都是由多种工作负载的复杂混合提供内部支持的。例如，像Amazon.com这样的电子商务应用程序需要存储低数据量、高任务关键度的数据，如用户、产品、订单、发票，以及高容量、低任务关键度的数据，如产品评论、帮助台消息、用户活动、用户推荐。自然，这些应用程序依赖于至少一个SQL数据库和至少一个NoSQL数据库。在多区域和全局部署中，NoSQL数据库还充当存储在数据源中的数据的地理分布式缓存，SQL数据库运行在单个区域。</p>
-
-          
+<li><p><strong>可配置的一致性</strong>：对读写操作均可配置不同的一致性级别。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/04/17/mongo与cassandra对比/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
-    </div>
+    </li></ul></div>
     
     
     
@@ -540,7 +503,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
