@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Redis,哨兵模式,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言Redis主从复制模式下，一旦主节点故障，需要手动将从节点升为主节点，同时还需要通知客户端更改主节点的地址。这种手动的故障处理方式在生产环境上是无法接受的。从Redis2.8以后，提供了Redis Sentiel哨兵机制来解决这个问题。 一、高可用概述 在web应用中，高可用是指服务可以正常访问的时间，衡量标准是多长时间可以提供正常服务(99.99%，99.999%等)。在Redis层面，高可">
+<meta name="keywords" content="Redis,哨兵模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis哨兵模式">
+<meta property="og:url" content="http://yoursite.com/2019/05/08/Redis哨兵模式/index.html">
+<meta property="og:site_name" content="renhexin&#39;s blog">
+<meta property="og:description" content="前言Redis主从复制模式下，一旦主节点故障，需要手动将从节点升为主节点，同时还需要通知客户端更改主节点的地址。这种手动的故障处理方式在生产环境上是无法接受的。从Redis2.8以后，提供了Redis Sentiel哨兵机制来解决这个问题。 一、高可用概述 在web应用中，高可用是指服务可以正常访问的时间，衡量标准是多长时间可以提供正常服务(99.99%，99.999%等)。在Redis层面，高可">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/05/08/Redis哨兵模式/16560ce61dbc4eeb.png">
+<meta property="og:updated_time" content="2019-05-12T06:11:20.717Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis哨兵模式">
+<meta name="twitter:description" content="前言Redis主从复制模式下，一旦主节点故障，需要手动将从节点升为主节点，同时还需要通知客户端更改主节点的地址。这种手动的故障处理方式在生产环境上是无法接受的。从Redis2.8以后，提供了Redis Sentiel哨兵机制来解决这个问题。 一、高可用概述 在web应用中，高可用是指服务可以正常访问的时间，衡量标准是多长时间可以提供正常服务(99.99%，99.999%等)。在Redis层面，高可">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/08/Redis哨兵模式/16560ce61dbc4eeb.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/08/Redis哨兵模式/">
+
+
+
+
+
+  <title>Redis哨兵模式 | renhexin's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">renhexin's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/08/Redis哨兵模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="RenHexin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renhexin's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Redis哨兵模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-08T21:17:18+08:00">
+                2019-05-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index">
+                    <span itemprop="name">Redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Redis主从复制模式下，一旦主节点故障，需要手动将从节点升为主节点，同时还需要通知客户端更改主节点的地址。这种手动的故障处理方式在生产环境上是无法接受的。从Redis2.8以后，提供了Redis Sentiel哨兵机制来解决这个问题。</p>
+<p>一、高可用概述</p>
+<p>在web应用中，高可用是指服务可以正常访问的时间，衡量标准是多长时间可以提供正常服务(99.99%，99.999%等)。在Redis层面，高可用的含义要宽泛些，除了保证提供正常服务(如主从复制、快速容灾技术等)。还需要考虑数据容量扩展、数据安全等等。</p>
+<p>在redis中，实现高可用的技术主要有持久化、复制、哨兵和集群。下面简单概述下他们的作用，以及解决了什么样的问题：</p>
+<ul>
+<li><p>持久化</p>
+<p>持久化是最简单的高可用方法。它的作用是数据备份，即将数据存储到硬盘，保证数据不会因进程退出而丢失。</p>
+</li>
+<li><p>复制</p>
+<p>复制是高可用Redis的基础，哨兵和集群都是在复制基础上实现的高可用。复制主要实现了数据了多机备份以及对于读操作的负载均衡和简单的故障恢复。缺陷是故障恢复无法自动化、写操作无法负载均衡、存储能力受到单机的限制。</p>
+</li>
+<li><p>哨兵</p>
+<p>在复制的基础上，哨兵实现了自动化的故障恢复。缺点是写操作无法负载均衡，粗出能力受到单机限制。</p>
+</li>
+<li><p>集群</p>
+<p>通过集群，Redis解决了写操作无法负载均衡以及存储能力受到单机限制的问题。实现了较为完善的高可用方案。</p>
+<a id="more"></a>
+</li>
+</ul>
+<h2 id="二、哨兵模式"><a href="#二、哨兵模式" class="headerlink" title="二、哨兵模式"></a>二、哨兵模式</h2><p><img src="/2019/05/08/Redis哨兵模式/16560ce61dbc4eeb.png" alt></p>
+<p><code>Redis Sentinel</code> 是 <code>Redis</code> <strong>高可用</strong> 的实现方案。<code>Sentinel</code> 是一个管理多个 <code>Redis</code> 实例的工具，它可以实现对 <code>Redis</code> 的 <strong>监控</strong>、<strong>通知</strong>、<strong>自动故障转移</strong>。下面先对 <code>Redis Sentinel</code> 的 <strong>基本概念</strong> 进行简单的介绍。</p>
+<h3 id="1-主从复制的问题"><a href="#1-主从复制的问题" class="headerlink" title="1. 主从复制的问题"></a>1. 主从复制的问题</h3><p>Redis主从复制可以将主节点的数据同步给从节点，从节点此时有两个作用：</p>
+<ul>
+<li>一旦 <strong>主节点宕机</strong>，<strong>从节点</strong> 作为 <strong>主节点</strong> 的 <strong>备份</strong> 可以随时顶上来。</li>
+<li>扩展 <strong>主节点</strong> 的 <strong>读能力</strong>，分担主节点读压力。</li>
+</ul>
+<p>主从复制同时存在以下几个问题：</p>
+<ul>
+<li>一旦 <strong>主节点宕机</strong>，<strong>从节点</strong> 晋升成 <strong>主节点</strong>，同时需要修改 <strong>应用方</strong> 的 <strong>主节点地址</strong>，还需要命令所有 <strong>从节点</strong> 去 <strong>复制</strong> 新的主节点，整个过程需要 <strong>人工干预</strong>。</li>
+<li><strong>主节点</strong> 的 <strong>写能力</strong> 受到 <strong>单机的限制</strong>。</li>
+<li><strong>主节点</strong> 的 <strong>存储能力</strong> 受到 <strong>单机的限制</strong>。</li>
+<li><strong>原生复制</strong> 的弊端在早期的版本中也会比较突出，比如：<code>Redis</code> <strong>复制中断</strong> 后，<strong>从节点</strong> 会发起 <code>psync</code>。此时如果 <strong>同步不成功</strong>，则会进行 <strong>全量同步</strong>，<strong>主库</strong> 执行 <strong>全量备份</strong> 的同时，可能会造成毫秒或秒级的 <strong>卡顿</strong>。</li>
+</ul>
+<h3 id="2-Redis-Sentinel的主要功能"><a href="#2-Redis-Sentinel的主要功能" class="headerlink" title="2. Redis Sentinel的主要功能"></a>2. Redis Sentinel的主要功能</h3><p><code>Sentinel</code> 的主要功能包括 <strong>主节点存活检测</strong>、<strong>主从运行情况检测</strong>、<strong>自动故障转移</strong> （<code>failover</code>）、<strong>主从切换</strong>。<code>Redis</code>的 <code>Sentinel</code> 最小配置是 <strong>一主一从</strong>。</p>
+<p><code>Redis</code> 的 <code>Sentinel</code> 系统可以用来管理多个 <code>Redis</code> 服务器，该系统可以执行以下四个任务：</p>
+<ul>
+<li><strong>监控</strong></li>
+</ul>
+<p><code>Sentinel</code> 会不断的检查 <strong>主服务器</strong> 和 <strong>从服务器</strong> 是否正常运行。</p>
+<ul>
+<li><strong>通知</strong></li>
+</ul>
+<p>当被监控的某个 <code>Redis</code> 服务器出现问题，<code>Sentinel</code> 通过 <code>API</code> <strong>脚本</strong> 向 <strong>管理员</strong> 或者其他的 <strong>应用程序</strong> 发送通知。</p>
+<ul>
+<li><strong>自动故障转移</strong></li>
+</ul>
+<p>当 <strong>主节点</strong> 不能正常工作时，<code>Sentinel</code> 会开始一次 <strong>自动的</strong> 故障转移操作，它会将与 <strong>失效主节点</strong> 是 <strong>主从关系</strong> 的其中一个 <strong>从节点</strong> 升级为新的 <strong>主节点</strong>，并且将其他的 <strong>从节点</strong> 指向 <strong>新的主节点</strong>。</p>
+<ul>
+<li><strong>配置提供者</strong></li>
+</ul>
+<p>在 <code>Redis Sentinel</code> 模式下，<strong>客户端应用</strong> 在初始化时连接的是 <code>Sentinel</code> <strong>节点集合</strong>，从中获取 <strong>主节点</strong> 的信息。</p>
+<h3 id="3-基本概念"><a href="#3-基本概念" class="headerlink" title="3. 基本概念"></a>3. 基本概念</h3><h4 id="主观下线与客观下线"><a href="#主观下线与客观下线" class="headerlink" title="主观下线与客观下线"></a>主观下线与客观下线</h4><p>默认情况下，<strong>每个</strong> <code>Sentinel</code> 节点会以 <strong>每秒一次</strong> 的频率对 <code>Redis</code> 节点和 <strong>其它</strong> 的 <code>Sentinel</code> 节点发送 <code>PING</code> 命令，并通过节点的 <strong>回复</strong> 来判断节点是否在线。</p>
+<ul>
+<li><strong>主观下线</strong></li>
+</ul>
+<p><strong>主观下线</strong> 适用于所有 <strong>主节点</strong> 和 <strong>从节点</strong>。如果在 <code>down-after-milliseconds</code> 毫秒内，<code>Sentinel</code> 没有收到 <strong>目标节点</strong> 的有效回复，则会判定 <strong>该节点</strong> 为 <strong>主观下线</strong>。</p>
+<ul>
+<li><strong>客观下线</strong></li>
+</ul>
+<p><strong>客观下线</strong> 只适用于 <strong>主节点</strong>。如果 <strong>主节点</strong> 出现故障，<code>Sentinel</code> 节点会通过 <code>sentinel is-master-down-by-addr</code> 命令，向其它 <code>Sentinel</code> 节点询问对该节点的 <strong>状态判断</strong>。如果超过 <code>&lt;quorum&gt;</code> 个数的节点判定 <strong>主节点</strong> 不可达，则该 <code>Sentinel</code> 节点会判断 <strong>主节点</strong> 为 <strong>客观下线</strong>。</p>
+<h4 id="Sentinel通信命令"><a href="#Sentinel通信命令" class="headerlink" title="Sentinel通信命令"></a>Sentinel通信命令</h4><p><code>Sentinel</code> 节点连接一个 <code>Redis</code> 实例的时候，会创建 <code>cmd</code> 和 <code>pub/sub</code> 两个 <strong>连接</strong>。<code>Sentinel</code> 通过 <code>cmd</code> 连接给 <code>Redis</code> 发送命令，通过 <code>pub/sub</code> 连接到 <code>Redis</code> 实例上的其他 <code>Sentinel</code> 实例。 </p>
+<p><code>Sentinel</code> 与 <code>Redis</code> <strong>主节点</strong> 和 <strong>从节点</strong> 交互的命令，主要包括：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作 用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PING</td>
+<td><code>Sentinel</code> 向 <code>Redis</code> 节点发送 <code>PING</code> 命令，检查节点的状态</td>
+</tr>
+<tr>
+<td>INFO</td>
+<td><code>Sentinel</code> 向 <code>Redis</code> 节点发送 <code>INFO</code> 命令，获取它的 <strong>从节点信息</strong></td>
+</tr>
+<tr>
+<td>PUBLISH</td>
+<td><code>Sentinel</code> 向其监控的 <code>Redis</code> 节点 <code>__sentinel__:hello</code> 这个 <code>channel</code> 发布 <strong>自己的信息</strong> 及 <strong>主节点</strong> 相关的配置</td>
+</tr>
+<tr>
+<td>SUBSCRIBE</td>
+<td><code>Sentinel</code> 通过订阅 <code>Redis</code> <strong>主节点</strong> 和 <strong>从节点</strong> 的 <code>__sentinel__:hello</code> 这个 <code>channnel</code>，获取正在监控相同服务的其他 <code>Sentinel</code> 节点</td>
+</tr>
+</tbody>
+</table>
+<p><code>Sentinel</code> 与 <code>Sentinel</code> 交互的命令，主要包括：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PING</td>
+<td><code>Sentinel</code> 向其他 <code>Sentinel</code> 节点发送 <code>PING</code> 命令，检查节点的状态</td>
+</tr>
+<tr>
+<td>SENTINEL:is-master-down-by-addr</td>
+<td>和其他 <code>Sentinel</code> 协商 <strong>主节点</strong> 的状态，如果 <strong>主节点</strong> 处于 <code>SDOWN</code> 状态，则投票自动选出新的 <strong>主节点</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-Redis-Sentinel工作原理"><a href="#4-Redis-Sentinel工作原理" class="headerlink" title="4. Redis Sentinel工作原理"></a>4. Redis Sentinel工作原理</h3><p>每个 <code>Sentinel</code> 节点都需要 <strong>定期执行</strong> 以下任务：</p>
+<ol>
+<li>每个 <code>Sentinel</code> 以 <strong>每秒钟</strong> 一次的频率，向它所知的 <strong>主服务器</strong>、<strong>从服务器</strong> 以及其他 <code>Sentinel</code> <strong>实例</strong> 发送一个 <code>PING</code> 命令。</li>
+<li>如果一个 <strong>实例</strong>（<code>instance</code>）距离 <strong>最后一次</strong> 有效回复 <code>PING</code> 命令的时间超过 <code>down-after-milliseconds</code> 所指定的值，那么这个实例会被 <code>Sentinel</code> 标记为 <strong>主观下线</strong>。</li>
+<li>如果一个 <strong>主服务器</strong> 被标记为 <strong>主观下线</strong>，那么正在 <strong>监视</strong> 这个 <strong>主服务器</strong> 的所有 <code>Sentinel</code> 节点，要以 <strong>每秒一次</strong> 的频率确认 <strong>主服务器</strong> 的确进入了 <strong>主观下线</strong> 状态。</li>
+<li>如果一个 <strong>主服务器</strong> 被标记为 <strong>主观下线</strong>，并且有 <strong>足够数量</strong> 的 <code>Sentinel</code>（至少要达到 <strong>配置文件</strong> 指定的数量）在指定的 <strong>时间范围</strong> 内同意这一判断，那么这个 <strong>主服务器</strong> 被标记为 <strong>客观下线</strong>。</li>
+<li>在一般情况下， 每个 <code>Sentinel</code> 会以每 <code>10</code> 秒一次的频率，向它已知的所有 <strong>主服务器</strong> 和 <strong>从服务器</strong> 发送 <code>INFO</code> 命令。当一个 <strong>主服务器</strong> 被 <code>Sentinel</code> 标记为 <strong>客观下线</strong> 时，<code>Sentinel</code> 向 <strong>下线主服务器</strong> 的所有 <strong>从服务器</strong> 发送 <code>INFO</code> 命令的频率，会从 <code>10</code> 秒一次改为 <strong>每秒一次</strong>。</li>
+<li><code>Sentinel</code> 和其他 <code>Sentinel</code> 协商 <strong>主节点</strong> 的状态，如果 <strong>主节点</strong> 处于 <code>SDOWN</code> 状态，则投票自动选出新的 <strong>主节点</strong>。将剩余的 <strong>从节点</strong> 指向 <strong>新的主节点</strong> 进行 <strong>数据复制</strong>。</li>
+<li>当没有足够数量的 <code>Sentinel</code> 同意 <strong>主服务器</strong> 下线时， <strong>主服务器</strong> 的 <strong>客观下线状态</strong> 就会被移除。当 <strong>主服务器</strong> 重新向 <code>Sentinel</code> 的 <code>PING</code> 命令返回 <strong>有效回复</strong> 时，<strong>主服务器</strong> 的 <strong>主观下线状态</strong> 就会被移除。</li>
+</ol>
+<blockquote>
+<p>注意：一个有效的 <code>PING</code> 回复可以是：<code>+PONG</code>、<code>-LOADING</code> 或者 <code>-MASTERDOWN</code>。如果 <strong>服务器</strong> 返回除以上三种回复之外的其他回复，又或者在 <strong>指定时间</strong> 内没有回复 <code>PING</code> 命令， 那么 <code>Sentinel</code> 认为服务器返回的回复 <strong>无效</strong>（<code>non-valid</code>）。</p>
+</blockquote>
+<h3 id="5-Redis-Sentinel配置说明"><a href="#5-Redis-Sentinel配置说明" class="headerlink" title="5. Redis Sentinel配置说明"></a>5. Redis Sentinel配置说明</h3><p>配置文件主要配置及说明：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 哨兵sentinel实例运行的端口，默认26379  </span></span><br><span class="line"><span class="string">port</span> <span class="number">26379</span></span><br><span class="line"><span class="comment"># 哨兵sentinel的工作目录</span></span><br><span class="line"><span class="string">dir</span> <span class="string">./</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 哨兵sentinel监控的redis主节点的 </span></span><br><span class="line"><span class="comment">## ip：主机ip地址</span></span><br><span class="line"><span class="comment">## port：哨兵端口号</span></span><br><span class="line"><span class="comment">## master-name：可以自己命名的主节点名字（只能由字母A-z、数字0-9 、这三个字符".-_"组成。）</span></span><br><span class="line"><span class="comment">## quorum：当这些quorum个数sentinel哨兵认为master主节点失联 那么这时 客观上认为主节点失联了  </span></span><br><span class="line"><span class="comment"># sentinel monitor &lt;master-name&gt; &lt;ip&gt; &lt;redis-port&gt; &lt;quorum&gt;  </span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">monitor</span> <span class="string">mymaster</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> <span class="number">6379</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 当在Redis实例中开启了requirepass &lt;foobared&gt;，所有连接Redis实例的客户端都要提供密码。</span></span><br><span class="line"><span class="comment"># sentinel auth-pass &lt;master-name&gt; &lt;password&gt;  </span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">auth-pass</span> <span class="string">mymaster</span> <span class="number">123456</span>  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定主节点应答哨兵sentinel的最大时间间隔，超过这个时间，哨兵主观上认为主节点下线，默认30秒  </span></span><br><span class="line"><span class="comment"># sentinel down-after-milliseconds &lt;master-name&gt; &lt;milliseconds&gt;</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">down-after-milliseconds</span> <span class="string">mymaster</span> <span class="number">30000</span>  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定了在发生failover主备切换时，最多可以有多少个slave同时对新的master进行同步。这个数字越小，完成failover所需的时间就越长；反之，但是如果这个数字越大，就意味着越多的slave因为replication而不可用。可以通过将这个值设为1，来保证每次只有一个slave，处于不能处理命令请求的状态。</span></span><br><span class="line"><span class="comment"># sentinel parallel-syncs &lt;master-name&gt; &lt;numslaves&gt;</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">parallel-syncs</span> <span class="string">mymaster</span> <span class="number">1</span>  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 故障转移的超时时间failover-timeout，默认三分钟，可以用在以下这些方面：</span></span><br><span class="line"><span class="comment">## 1. 同一个sentinel对同一个master两次failover之间的间隔时间。  </span></span><br><span class="line"><span class="comment">## 2. 当一个slave从一个错误的master那里同步数据时开始，直到slave被纠正为从正确的master那里同步数据时结束。  </span></span><br><span class="line"><span class="comment">## 3. 当想要取消一个正在进行的failover时所需要的时间。</span></span><br><span class="line"><span class="comment">## 4.当进行failover时，配置所有slaves指向新的master所需的最大时间。不过，即使过了这个超时，slaves依然会被正确配置为指向master，但是就不按parallel-syncs所配置的规则来同步数据了</span></span><br><span class="line"><span class="comment"># sentinel failover-timeout &lt;master-name&gt; &lt;milliseconds&gt;  </span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">failover-timeout</span> <span class="string">mymaster</span> <span class="number">180000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 当sentinel有任何警告级别的事件发生时（比如说redis实例的主观失效和客观失效等等），将会去调用这个脚本。一个脚本的最大执行时间为60s，如果超过这个时间，脚本将会被一个SIGKILL信号终止，之后重新执行。</span></span><br><span class="line"><span class="comment"># 对于脚本的运行结果有以下规则：  </span></span><br><span class="line"><span class="comment">## 1. 若脚本执行后返回1，那么该脚本稍后将会被再次执行，重复次数目前默认为10。</span></span><br><span class="line"><span class="comment">## 2. 若脚本执行后返回2，或者比2更高的一个返回值，脚本将不会重复执行。  </span></span><br><span class="line"><span class="comment">## 3. 如果脚本在执行过程中由于收到系统中断信号被终止了，则同返回值为1时的行为相同。</span></span><br><span class="line"><span class="comment"># sentinel notification-script &lt;master-name&gt; &lt;script-path&gt;  </span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">notification-script</span> <span class="string">mymaster</span> <span class="string">/var/redis/notify.sh</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这个脚本应该是通用的，能被多次调用，不是针对性的。</span></span><br><span class="line"><span class="comment"># sentinel client-reconfig-script &lt;master-name&gt; &lt;script-path&gt;</span></span><br><span class="line"><span class="string">sentinel</span> <span class="string">client-reconfig-script</span> <span class="string">mymaster</span> <span class="string">/var/redis/reconfig.sh</span></span><br></pre></td></tr></table></figure>
+<p>在配置好主从模式的基础上，配置sentinel。配置三台sentinel来保证高可用</p>
+<p>拷贝 <code>redis-sentinel.conf</code> 文件到 <code>/usr/local/redis-sentinel</code> 目录下面。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/local/redis-5.0.4/sentinel.conf /usr/local/redis-sentinel/sentinel.conf</span><br></pre></td></tr></table></figure>
+<p>修改配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">protected-mode no</span><br><span class="line">bind 192.168.34.17</span><br><span class="line">port 16380</span><br><span class="line">daemonize yes</span><br><span class="line">sentinel monitor master 192.168.34.12 6379 2</span><br><span class="line">sentinel down-after-milliseconds master 5000</span><br><span class="line">sentinel failover-timeout master 180000</span><br><span class="line">sentinel parallel-syncs master 1</span><br><span class="line">sentinel auth-pass master 123456</span><br><span class="line">logfile /var/log/redis/sentinel.log</span><br></pre></td></tr></table></figure>
+<p>以上配置在另外两台机器上配置。</p>
+<p>顺序启动三台sentinel，命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-sentinel /usr/local/redis-sentinel/sentinel.conf</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
+          
+            <a href="/tags/哨兵模式/" rel="tag"># 哨兵模式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/07/Redis简述及主从模式/" rel="next" title="Redis简述及主从模式">
+                <i class="fa fa-chevron-left"></i> Redis简述及主从模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">RenHexin</p>
+              <p class="site-description motion-element" itemprop="description">Never Settle</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、哨兵模式"><span class="nav-number">2.</span> <span class="nav-text">二、哨兵模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-主从复制的问题"><span class="nav-number">2.1.</span> <span class="nav-text">1. 主从复制的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Redis-Sentinel的主要功能"><span class="nav-number">2.2.</span> <span class="nav-text">2. Redis Sentinel的主要功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-基本概念"><span class="nav-number">2.3.</span> <span class="nav-text">3. 基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#主观下线与客观下线"><span class="nav-number">2.3.1.</span> <span class="nav-text">主观下线与客观下线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Sentinel通信命令"><span class="nav-number">2.3.2.</span> <span class="nav-text">Sentinel通信命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Redis-Sentinel工作原理"><span class="nav-number">2.4.</span> <span class="nav-text">4. Redis Sentinel工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Redis-Sentinel配置说明"><span class="nav-number">2.5.</span> <span class="nav-text">5. Redis Sentinel配置说明</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RenHexin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

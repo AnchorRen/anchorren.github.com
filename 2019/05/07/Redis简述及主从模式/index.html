@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Redis,哨兵模式,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Redis 是一个使用 ANSI C 编写的开源、支持 网络、基于 内存、单线程模型、可选持久性 的 键值对存储数据库。 一、Redis特性 速度快。最快可达到 10w QPS（基于 内存，C 语言，单线程 架构）； 基于 键值对 (key/value) 的数据结构服务器。全称 Remote Dictionary Server。包括 string(字符串)、hash(哈希)、list(列表)、se">
+<meta name="keywords" content="Redis,哨兵模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis简述及主从模式">
+<meta property="og:url" content="http://yoursite.com/2019/05/07/Redis简述及主从模式/index.html">
+<meta property="og:site_name" content="renhexin&#39;s blog">
+<meta property="og:description" content="Redis 是一个使用 ANSI C 编写的开源、支持 网络、基于 内存、单线程模型、可选持久性 的 键值对存储数据库。 一、Redis特性 速度快。最快可达到 10w QPS（基于 内存，C 语言，单线程 架构）； 基于 键值对 (key/value) 的数据结构服务器。全称 Remote Dictionary Server。包括 string(字符串)、hash(哈希)、list(列表)、se">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-12T05:45:57.792Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis简述及主从模式">
+<meta name="twitter:description" content="Redis 是一个使用 ANSI C 编写的开源、支持 网络、基于 内存、单线程模型、可选持久性 的 键值对存储数据库。 一、Redis特性 速度快。最快可达到 10w QPS（基于 内存，C 语言，单线程 架构）； 基于 键值对 (key/value) 的数据结构服务器。全称 Remote Dictionary Server。包括 string(字符串)、hash(哈希)、list(列表)、se">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/07/Redis简述及主从模式/">
+
+
+
+
+
+  <title>Redis简述及主从模式 | renhexin's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">renhexin's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/Redis简述及主从模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="RenHexin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renhexin's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Redis简述及主从模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T23:10:32+08:00">
+                2019-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index">
+                    <span itemprop="name">Redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><code>Redis</code> 是一个使用 <code>ANSI C</code> 编写的开源、支持 <strong>网络</strong>、基于 <strong>内存</strong>、<strong>单线程模型</strong>、<strong>可选持久性</strong> 的 <strong>键值对存储数据库</strong>。</p>
+<h2 id="一、Redis特性"><a href="#一、Redis特性" class="headerlink" title="一、Redis特性"></a>一、Redis特性</h2><ol>
+<li><strong>速度快</strong>。最快可达到 <code>10w QPS</code>（基于 <strong>内存</strong>，<code>C</code> 语言，<strong>单线程</strong> 架构）；</li>
+<li>基于 <strong>键值对</strong> (<code>key/value</code>) 的数据结构服务器。全称 <code>Remote Dictionary Server</code>。包括 <code>string</code>(<strong>字符串</strong>)、<code>hash</code>(<strong>哈希</strong>)、<code>list</code>(<strong>列表</strong>)、<code>set</code>(<strong>集合</strong>)、<code>zset</code>(<strong>有序集合</strong>)、<code>bitmap</code>(<strong>位图</strong>)。同时在 <strong>字符串</strong> 的基础上演变出 <strong>位图</strong>（<code>BitMaps</code>）和 <code>HyperLogLog</code> 两种数据结构。<code>3.2</code> 版本中加入 <code>GEO</code>（<strong>地理信息位置</strong>）。</li>
+<li><strong>丰富的功能</strong>。例如：<strong>键过期</strong>（缓存），<strong>发布订阅</strong>（消息队列）， <code>Lua</code> 脚本（自己实现 <code>Redis</code> 命令），<strong>事务</strong>，<strong>流水线</strong>（<code>Pipeline</code>，用于减少网络开销）。</li>
+<li><strong>简单稳定</strong>。无外部库依赖，单线程模型。</li>
+<li>客户端语言多。</li>
+<li><strong>持久化</strong>（支持两种 <strong>持久化</strong> 方式 <code>RDB</code> 和 <code>AOF</code>）。</li>
+<li><strong>主从复制</strong>（分布式的基础）。</li>
+<li><strong>高可用</strong>（<code>Redis Sentinel</code>），<strong>分布式</strong>（<code>Redis Cluster</code>）和 <strong>水平扩容</strong>。</li>
+</ol>
+<h2 id="二、Redis的应用场景"><a href="#二、Redis的应用场景" class="headerlink" title="二、Redis的应用场景"></a>二、Redis的应用场景</h2><h3 id="1、缓存"><a href="#1、缓存" class="headerlink" title="1、缓存"></a>1、缓存</h3><p>相对静态、或变化缓慢的数据，可以利用缓存降低数据库IO压力，提升性能。合理的使用 <strong>缓存</strong> 能够明显加快访问的速度，同时降低数据源的压力。这也是 <code>Redis</code> 最常用的功能。<code>Redis</code> 提供了 <strong>键值过期时间</strong>（<code>EXPIRE key seconds</code>）设置，并且也提供了灵活控制 <strong>最大内存</strong> 和 <strong>内存溢出</strong> 后的 <strong>淘汰策略</strong>。</p>
+<h3 id="2、-排行榜"><a href="#2、-排行榜" class="headerlink" title="2、 排行榜"></a>2、 排行榜</h3><p>每个网站都有自己的排行榜，例如按照 <strong>热度排名</strong> 的排行榜，<strong>发布时间</strong> 的排行榜，<strong>答题排行榜</strong> 等等。<code>Redis</code> 提供了 <strong>列表</strong>（<code>list</code>）和 <strong>有序集合</strong>（<code>zset</code>）数据结构，合理的使用这些数据结构，可以很方便的构建各种排行榜系统。</p>
+<h3 id="3、-计数器"><a href="#3、-计数器" class="headerlink" title="3、 计数器"></a>3、 计数器</h3><p><strong>计数器</strong> 在网站应用中非常重要。例如：<strong>点赞数</strong>加 <code>1</code>，<strong>浏览数</strong> 加 <code>1</code>。还有常用的 <strong>限流操作</strong>，限制每个用户每秒 <strong>访问系统的次数</strong> 等等。<code>Redis</code> 支持 <strong>计数功能</strong>（<code>INCR key</code>），而且计数的 <strong>性能</strong> 也非常好，计数的同时也可以设置 <strong>超时时间</strong>，这样就可以 <strong>实现限流</strong>。</p>
+<h3 id="4、-社交网络"><a href="#4、-社交网络" class="headerlink" title="4、 社交网络"></a>4、 社交网络</h3><p>赞/踩，粉丝，共同好友/喜好，推送，下拉刷新等是社交网站必备的功能。由于社交网站 <strong>访问量通常比较大</strong>，而且 <strong>传统的数据库</strong> 不太适合保存这类数据，<code>Redis</code> 提供的 <strong>数据结构</strong> 可以相对比较容易实现这些功能。<br><a id="more"></a></p>
+<h3 id="5、消息队列"><a href="#5、消息队列" class="headerlink" title="5、消息队列"></a>5、消息队列</h3><p><code>Redis</code> 提供的 <strong>发布订阅</strong>（<code>PUB/SUB</code>）和 <strong>阻塞队列</strong> 的功能，虽然和专业的消息队列比，还 <strong>不够强大</strong>，但对于一般的消息队列功能基本满足。</p>
+<h3 id="6、分布式锁"><a href="#6、分布式锁" class="headerlink" title="6、分布式锁"></a>6、分布式锁</h3><p>集群环境下对同一个资源的竞争，可借助redis来实现对资源加锁。可查阅redis官方redlock相关介绍</p>
+<h3 id="7、限数"><a href="#7、限数" class="headerlink" title="7、限数"></a>7、限数</h3><p>每60秒获取一次验证码，设置key、value、失效时间1分钟到redis，每次获取校验码进行先验证redis是否有值即可。</p>
+<h3 id="8、分布式Session"><a href="#8、分布式Session" class="headerlink" title="8、分布式Session"></a>8、分布式Session</h3><h2 id="三、Redis安装"><a href="#三、Redis安装" class="headerlink" title="三、Redis安装"></a>三、Redis安装</h2><p>Redis支持多种模式运行方式，包括：</p>
+<ul>
+<li>单机模式</li>
+<li>主从辅助模式</li>
+<li>哨兵模式</li>
+<li>集群模式</li>
+</ul>
+<h3 id="1、单机模式"><a href="#1、单机模式" class="headerlink" title="1、单机模式"></a>1、单机模式</h3><p>####1.1 下载安装包，并解压</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/</span><br><span class="line">wget http://download.redis.io/releases/redis-5.0.4.tar.gz</span><br><span class="line">tar -zxvf redis-5.0.4.tar.gz</span><br></pre></td></tr></table></figure>
+<h4 id="1-2-编译安装"><a href="#1-2-编译安装" class="headerlink" title="1.2 编译安装"></a>1.2 编译安装</h4><p>这里配置 <code>Redis</code> 安装路径为 <code>/usr/local/redis</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/redis-5.0.4</span><br><span class="line">make install PREFIX=/usr/local/redis</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意</strong>：<code>make install PREFIX</code>=目标安装路径</p>
+</blockquote>
+<p>安装完成时，<code>/usr/local/redis/bin</code> 目录下会生成的几个可执行的文件。</p>
+<table>
+<thead>
+<tr>
+<th>可执行文件</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>redis-server</td>
+<td>启动 redis 服务</td>
+</tr>
+<tr>
+<td>redis-cli</td>
+<td>redis命令行客户端</td>
+</tr>
+<tr>
+<td>redis-benchmark</td>
+<td>redis 基准测试工具</td>
+</tr>
+<tr>
+<td>redis-check-aof</td>
+<td>redis AOF 持久化文件检测和修复工具</td>
+</tr>
+<tr>
+<td>redis-check-dump</td>
+<td>redis RDB 持久化文件检测和修复工具</td>
+</tr>
+<tr>
+<td>redis-sentinel</td>
+<td>启动 redis sentinel</td>
+</tr>
+</tbody>
+</table>
+<p>复制 <code>Redis</code> 相关命令到 <code>/usr/local/bin</code> 目录下，这样就可以直接执行这些命令，不用写全路径。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/redis/bin/</span><br><span class="line">cp redis-cli redis-server redis-sentinel /usr/local/bin</span><br></pre></td></tr></table></figure>
+<h4 id="1-3-修改Redis配置文件"><a href="#1-3-修改Redis配置文件" class="headerlink" title="1.3 修改Redis配置文件"></a>1.3 修改Redis配置文件</h4><p>安装完成之后将 <code>Redis</code> 配置文件拷贝到 <code>/usr/local</code> 下，Redis的配置文件<code>redis.conf</code> 放在<code>/usr/local/redis-5.0.4</code>下。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/local/redis-5.0.4/redis.conf /usr/local/</span><br></pre></td></tr></table></figure>
+<p><code>Redis</code> 配置文件参数说明：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> redis进程是否以守护进程的方式运行，yes为是，no为否(不以守护进程的方式运行会占用一个终端)。</span><br><span class="line">daemonize no</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 指定redis进程的PID文件存放位置</span><br><span class="line">pidfile /var/run/redis.pid</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> redis进程的端口号</span><br><span class="line">port 6379</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 绑定的主机地址</span><br><span class="line">bind 127.0.0.1</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 客户端闲置多长时间后关闭连接，默认此参数为0即关闭此功能</span><br><span class="line">timeout 300</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> redis日志级别，可用的级别有debug.verbose.notice.warning</span><br><span class="line">loglevel verbose</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> log文件输出位置，如果进程以守护进程的方式运行，此处又将输出文件设置为stdout的话，就会将日志信息输出到/dev/null里面去了</span><br><span class="line">logfile stdout</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 设置数据库的数量，默认为0可以使用select &lt;dbid&gt;命令在连接上指定数据库id</span><br><span class="line">databases 16</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 指定在多少时间内刷新次数达到多少的时候会将数据同步到数据文件</span><br><span class="line">save &lt;seconds&gt; &lt;changes&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 指定存储至本地数据库时是否压缩文件，默认为yes即启用存储</span><br><span class="line">rdbcompression yes</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 指定本地数据库文件名</span><br><span class="line">dbfilename dump.db</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 指定本地数据问就按存放位置</span><br><span class="line">dir ./</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 指定当本机为slave服务时，设置master服务的IP地址及端口，在redis启动的时候他会自动跟master进行数据同步</span><br><span class="line">replicaof &lt;masterip&gt; &lt;masterport&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 当master设置了密码保护时，slave服务连接master的密码</span><br><span class="line">masterauth &lt;master-password&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 设置redis连接密码，如果配置了连接密码，客户端在连接redis是需要通过AUTH&lt;password&gt;命令提供密码，默认关闭</span><br><span class="line">requirepass footbared</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 设置同一时间最大客户连接数，默认无限制。redis可以同时连接的客户端数为redis程序可以打开的最大文件描述符，如果设置 maxclients 0，表示不作限制。当客户端连接数到达限制时，Redis会关闭新的连接并向客户端返回 max number of clients reached 错误信息</span><br><span class="line">maxclients 10000</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 指定Redis最大内存限制，Redis在启动时会把数据加载到内存中，达到最大内存后，Redis会先尝试清除已到期或即将到期的Key。当此方法处理后，仍然到达最大内存设置，将无法再进行写入操作，但仍然可以进行读取操作。Redis新的vm机制，会把Key存放内存，Value会存放在swap区</span><br><span class="line">maxmemory&lt;bytes&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 指定是否在每次更新操作后进行日志记录，Redis在默认情况下是异步的把数据写入磁盘，如果不开启，可能会在断电时导致一段时间内的数据丢失。因为redis本身同步数据文件是按上面save条件来同步的，所以有的数据会在一段时间内只存在于内存中。默认为no。</span><br><span class="line">appendonly no</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 指定跟新日志文件名默认为appendonly.aof</span><br><span class="line">appendfilename appendonly.aof</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 指定更新日志的条件，有三个可选参数 - no：表示等操作系统进行数据缓存同步到磁盘(快)，always：表示每次更新操作后手动调用fsync()将数据写到磁盘(慢，安全)， everysec：表示每秒同步一次(折衷，默认值)；</span><br><span class="line">appendfsync everysec</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> MAXMEMORY POLICY: how Redis will select what to remove when maxmemory</span><br><span class="line"><span class="meta">#</span> is reached. You can select among five behaviors:</span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span> volatile-lru -&gt; Evict using approximated LRU among the keys with an expire set.</span><br><span class="line"><span class="meta">#</span> allkeys-lru -&gt; Evict any key using approximated LRU.</span><br><span class="line"><span class="meta">#</span> volatile-lfu -&gt; Evict using approximated LFU among the keys with an expire set.</span><br><span class="line"><span class="meta">#</span> allkeys-lfu -&gt; Evict any key using approximated LFU.</span><br><span class="line"><span class="meta">#</span> volatile-random -&gt; Remove a random key among the ones with an expire set.</span><br><span class="line"><span class="meta">#</span> allkeys-random -&gt; Remove a random key, any key.</span><br><span class="line"><span class="meta">#</span> volatile-ttl -&gt; Remove the key with the nearest expire time (minor TTL)</span><br><span class="line"><span class="meta">#</span> noeviction -&gt; Don't evict anything, just return an error on write operations.</span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span> LRU means Least Recently Used</span><br><span class="line"><span class="meta">#</span> LFU means Least Frequently Used</span><br><span class="line">maxmemory-policy noeviction</span><br></pre></td></tr></table></figure>
+<ul>
+<li>设置后台启动</li>
+</ul>
+<p>由于 <code>Redis</code> 默认是 <strong>前台启动</strong>，不建议使用。修改 <code>Redis</code> 配置文件，把 <code>daemonize no</code> 改为 <code>daemonize yes</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">daemonize yes</span><br></pre></td></tr></table></figure>
+<ul>
+<li>设置远程访问</li>
+</ul>
+<p><code>Redis</code> 默认只允许 <strong>本机访问</strong>，把 <code>bind</code> 修改为 <code>bind 0.0.0.0</code> 此设置会变成 <strong>允许所有远程访问</strong>。如果想指定限制访问，可设置对应的 <code>IP</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bind 0.0.0.0</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置 <code>Redis</code> 日志记录</li>
+</ul>
+<p>找到 <code>logfile</code> 配置，默认是：<code>logfile &quot;&quot;</code>，改为自定义日志文件路径。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logfile /var/log/redis_6379.log</span><br></pre></td></tr></table></figure>
+<ul>
+<li>设置 <code>Redis</code> 请求密码</li>
+</ul>
+<p>把 <code>requirepass</code> 修改为 <code>passwd</code>，修改之后重启下服务</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">requirepass <span class="string">"passwd"</span></span><br></pre></td></tr></table></figure>
+<p>有了密码之后，进入客户端，就得这样访问：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 127.0.0.1 -p 6379 -a passwd</span><br></pre></td></tr></table></figure>
+<h4 id="1-4-常用命令"><a href="#1-4-常用命令" class="headerlink" title="1.4 常用命令"></a>1.4 常用命令</h4><ul>
+<li>启动命令</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-server /usr/local/redis.conf</span><br></pre></td></tr></table></figure>
+<ul>
+<li>关闭命令</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 127.0.0.1 -p 6379 shutdown</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看是否启动</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -ef | grep redis</span><br></pre></td></tr></table></figure>
+<ul>
+<li>进入客户端</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli</span><br></pre></td></tr></table></figure>
+<ul>
+<li>关闭客户端</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli shutdown</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意</strong>：不建议使用 <code>kill -9</code>，这种方式不但不会做持久化操作，还会造成缓冲区等资源不能优雅关闭。极端情况下造成 <code>AOF</code> 和 <strong>复制丢失数据</strong> 的情况。<code>shutdown</code> 还有一个参数，代表是否在关闭 <code>redis</code> 前，生成 <strong>持久化文件</strong>，命令为 <code>redis-cli shutdown nosave|save</code></p>
+</blockquote>
+<h3 id="2、主从复制模式"><a href="#2、主从复制模式" class="headerlink" title="2、主从复制模式"></a>2、主从复制模式</h3><table>
+<thead>
+<tr>
+<th>IP</th>
+<th>角色</th>
+<th>端口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>192.168.34.12</td>
+<td>master</td>
+<td>6379</td>
+</tr>
+<tr>
+<td>192.168.34.13</td>
+<td>slave</td>
+<td>6379</td>
+</tr>
+</tbody>
+</table>
+<h4 id="2-1-主服务器配置"><a href="#2-1-主服务器配置" class="headerlink" title="2.1 主服务器配置"></a>2.1 主服务器配置</h4><p>主服务器主要配置redis.conf如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">daemonize yes</span><br><span class="line">pidfile /var/run/redis-16379.pid</span><br><span class="line">logfile /var/log/redis/redis-16379.log</span><br><span class="line">port 6379</span><br><span class="line">bind 0.0.0.0</span><br><span class="line">timeout 300</span><br><span class="line">databases 16</span><br><span class="line">dbfilename dump-6379.rdb</span><br><span class="line">dir ./redis-workdir</span><br><span class="line">masterauth pwd123</span><br><span class="line">requirepass pwd123</span><br></pre></td></tr></table></figure>
+<h4 id="2-2-从服务器配置"><a href="#2-2-从服务器配置" class="headerlink" title="2.2 从服务器配置"></a>2.2 从服务器配置</h4><p>从服务器主要配置redis.conf如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">daemonize yes</span><br><span class="line">pidfile /var/run/redis-6379.pid</span><br><span class="line">logfile /var/log/redis/redis-6379.log</span><br><span class="line">port 6379</span><br><span class="line">bind 0.0.0.0</span><br><span class="line">timeout 300</span><br><span class="line">databases 16</span><br><span class="line">dbfilename dump-6379.rdb</span><br><span class="line">dir ./redis-workdir</span><br><span class="line">masterauth pwd123</span><br><span class="line">requirepass pwd123</span><br><span class="line">replicaof 192.168.34.12 6379</span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li><p>如果 <strong>主服务器</strong> 设置了密码，还需要找到 <code>masterauth &lt;master-password&gt;</code> 这一行，去掉注释，改为 <code>masterauth</code> 的主机密码。</p>
+</li>
+<li><p>配置好机器，启动服务器，进入 <strong>主服务器</strong> 的 <code>redis-cli</code> 模式下，命令为 <code>redis-cli -h 127.0.0.1 -p 6379 -a pwd123</code>。输入 <code>INFO replication</code> 查询到 <strong>当前主机</strong> 的 <code>Redis</code> 的状态，连接上 <strong>主服务器</strong> 的 <strong>从服务器</strong>。</p>
+</li>
+</ul>
+<h3 id="2-3-验证"><a href="#2-3-验证" class="headerlink" title="2.3 验证"></a>2.3 验证</h3><p>进入 <strong>主服务器</strong> 的 <code>redis-cli</code> 模式，然后 <code>set</code> 一个值，比如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> set redis_master "192.168.34.12"</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<ul>
+<li>切换进入 <strong>从服务器</strong> 的 <code>redis-cli</code> 的模式，查询刚刚设置的值看是否存在：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> get redis_master</span><br><span class="line">"192.168.34.12"</span><br></pre></td></tr></table></figure>
+<p>此时，我们可以发现是可以获取到值的，<code>Redis</code> 的 <strong>主从模式</strong> 正常工作。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
+          
+            <a href="/tags/哨兵模式/" rel="tag"># 哨兵模式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/17/mongo与cassandra对比/" rel="next" title="Cassandra与MongoDB对比">
+                <i class="fa fa-chevron-left"></i> Cassandra与MongoDB对比
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/08/Redis哨兵模式/" rel="prev" title="Redis哨兵模式">
+                Redis哨兵模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">RenHexin</p>
+              <p class="site-description motion-element" itemprop="description">Never Settle</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Redis特性"><span class="nav-number">1.</span> <span class="nav-text">一、Redis特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Redis的应用场景"><span class="nav-number">2.</span> <span class="nav-text">二、Redis的应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、缓存"><span class="nav-number">2.1.</span> <span class="nav-text">1、缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、-排行榜"><span class="nav-number">2.2.</span> <span class="nav-text">2、 排行榜</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、-计数器"><span class="nav-number">2.3.</span> <span class="nav-text">3、 计数器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、-社交网络"><span class="nav-number">2.4.</span> <span class="nav-text">4、 社交网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、消息队列"><span class="nav-number">2.5.</span> <span class="nav-text">5、消息队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、分布式锁"><span class="nav-number">2.6.</span> <span class="nav-text">6、分布式锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7、限数"><span class="nav-number">2.7.</span> <span class="nav-text">7、限数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8、分布式Session"><span class="nav-number">2.8.</span> <span class="nav-text">8、分布式Session</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、Redis安装"><span class="nav-number">3.</span> <span class="nav-text">三、Redis安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、单机模式"><span class="nav-number">3.1.</span> <span class="nav-text">1、单机模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-编译安装"><span class="nav-number">3.1.1.</span> <span class="nav-text">1.2 编译安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-修改Redis配置文件"><span class="nav-number">3.1.2.</span> <span class="nav-text">1.3 修改Redis配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-常用命令"><span class="nav-number">3.1.3.</span> <span class="nav-text">1.4 常用命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、主从复制模式"><span class="nav-number">3.2.</span> <span class="nav-text">2、主从复制模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-主服务器配置"><span class="nav-number">3.2.1.</span> <span class="nav-text">2.1 主服务器配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-从服务器配置"><span class="nav-number">3.2.2.</span> <span class="nav-text">2.2 从服务器配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-验证"><span class="nav-number">3.3.</span> <span class="nav-text">2.3 验证</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RenHexin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

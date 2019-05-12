@@ -290,6 +290,327 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/08/Redis哨兵模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="RenHexin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renhexin's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/08/Redis哨兵模式/" itemprop="url">Redis哨兵模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-08T21:17:18+08:00">
+                2019-05-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index">
+                    <span itemprop="name">Redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Redis主从复制模式下，一旦主节点故障，需要手动将从节点升为主节点，同时还需要通知客户端更改主节点的地址。这种手动的故障处理方式在生产环境上是无法接受的。从Redis2.8以后，提供了Redis Sentiel哨兵机制来解决这个问题。</p>
+<p>一、高可用概述</p>
+<p>在web应用中，高可用是指服务可以正常访问的时间，衡量标准是多长时间可以提供正常服务(99.99%，99.999%等)。在Redis层面，高可用的含义要宽泛些，除了保证提供正常服务(如主从复制、快速容灾技术等)。还需要考虑数据容量扩展、数据安全等等。</p>
+<p>在redis中，实现高可用的技术主要有持久化、复制、哨兵和集群。下面简单概述下他们的作用，以及解决了什么样的问题：</p>
+<ul>
+<li><p>持久化</p>
+<p>持久化是最简单的高可用方法。它的作用是数据备份，即将数据存储到硬盘，保证数据不会因进程退出而丢失。</p>
+</li>
+<li><p>复制</p>
+<p>复制是高可用Redis的基础，哨兵和集群都是在复制基础上实现的高可用。复制主要实现了数据了多机备份以及对于读操作的负载均衡和简单的故障恢复。缺陷是故障恢复无法自动化、写操作无法负载均衡、存储能力受到单机的限制。</p>
+</li>
+<li><p>哨兵</p>
+<p>在复制的基础上，哨兵实现了自动化的故障恢复。缺点是写操作无法负载均衡，粗出能力受到单机限制。</p>
+</li>
+<li><p>集群</p>
+<p>通过集群，Redis解决了写操作无法负载均衡以及存储能力受到单机限制的问题。实现了较为完善的高可用方案。</p></li></ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/05/08/Redis哨兵模式/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/Redis简述及主从模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="RenHexin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renhexin's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/07/Redis简述及主从模式/" itemprop="url">Redis简述及主从模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T23:10:32+08:00">
+                2019-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index">
+                    <span itemprop="name">Redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p><code>Redis</code> 是一个使用 <code>ANSI C</code> 编写的开源、支持 <strong>网络</strong>、基于 <strong>内存</strong>、<strong>单线程模型</strong>、<strong>可选持久性</strong> 的 <strong>键值对存储数据库</strong>。</p>
+<h2 id="一、Redis特性"><a href="#一、Redis特性" class="headerlink" title="一、Redis特性"></a>一、Redis特性</h2><ol>
+<li><strong>速度快</strong>。最快可达到 <code>10w QPS</code>（基于 <strong>内存</strong>，<code>C</code> 语言，<strong>单线程</strong> 架构）；</li>
+<li>基于 <strong>键值对</strong> (<code>key/value</code>) 的数据结构服务器。全称 <code>Remote Dictionary Server</code>。包括 <code>string</code>(<strong>字符串</strong>)、<code>hash</code>(<strong>哈希</strong>)、<code>list</code>(<strong>列表</strong>)、<code>set</code>(<strong>集合</strong>)、<code>zset</code>(<strong>有序集合</strong>)、<code>bitmap</code>(<strong>位图</strong>)。同时在 <strong>字符串</strong> 的基础上演变出 <strong>位图</strong>（<code>BitMaps</code>）和 <code>HyperLogLog</code> 两种数据结构。<code>3.2</code> 版本中加入 <code>GEO</code>（<strong>地理信息位置</strong>）。</li>
+<li><strong>丰富的功能</strong>。例如：<strong>键过期</strong>（缓存），<strong>发布订阅</strong>（消息队列）， <code>Lua</code> 脚本（自己实现 <code>Redis</code> 命令），<strong>事务</strong>，<strong>流水线</strong>（<code>Pipeline</code>，用于减少网络开销）。</li>
+<li><strong>简单稳定</strong>。无外部库依赖，单线程模型。</li>
+<li>客户端语言多。</li>
+<li><strong>持久化</strong>（支持两种 <strong>持久化</strong> 方式 <code>RDB</code> 和 <code>AOF</code>）。</li>
+<li><strong>主从复制</strong>（分布式的基础）。</li>
+<li><strong>高可用</strong>（<code>Redis Sentinel</code>），<strong>分布式</strong>（<code>Redis Cluster</code>）和 <strong>水平扩容</strong>。</li>
+</ol>
+<h2 id="二、Redis的应用场景"><a href="#二、Redis的应用场景" class="headerlink" title="二、Redis的应用场景"></a>二、Redis的应用场景</h2><h3 id="1、缓存"><a href="#1、缓存" class="headerlink" title="1、缓存"></a>1、缓存</h3><p>相对静态、或变化缓慢的数据，可以利用缓存降低数据库IO压力，提升性能。合理的使用 <strong>缓存</strong> 能够明显加快访问的速度，同时降低数据源的压力。这也是 <code>Redis</code> 最常用的功能。<code>Redis</code> 提供了 <strong>键值过期时间</strong>（<code>EXPIRE key seconds</code>）设置，并且也提供了灵活控制 <strong>最大内存</strong> 和 <strong>内存溢出</strong> 后的 <strong>淘汰策略</strong>。</p>
+<h3 id="2、-排行榜"><a href="#2、-排行榜" class="headerlink" title="2、 排行榜"></a>2、 排行榜</h3><p>每个网站都有自己的排行榜，例如按照 <strong>热度排名</strong> 的排行榜，<strong>发布时间</strong> 的排行榜，<strong>答题排行榜</strong> 等等。<code>Redis</code> 提供了 <strong>列表</strong>（<code>list</code>）和 <strong>有序集合</strong>（<code>zset</code>）数据结构，合理的使用这些数据结构，可以很方便的构建各种排行榜系统。</p>
+<h3 id="3、-计数器"><a href="#3、-计数器" class="headerlink" title="3、 计数器"></a>3、 计数器</h3><p><strong>计数器</strong> 在网站应用中非常重要。例如：<strong>点赞数</strong>加 <code>1</code>，<strong>浏览数</strong> 加 <code>1</code>。还有常用的 <strong>限流操作</strong>，限制每个用户每秒 <strong>访问系统的次数</strong> 等等。<code>Redis</code> 支持 <strong>计数功能</strong>（<code>INCR key</code>），而且计数的 <strong>性能</strong> 也非常好，计数的同时也可以设置 <strong>超时时间</strong>，这样就可以 <strong>实现限流</strong>。</p>
+<h3 id="4、-社交网络"><a href="#4、-社交网络" class="headerlink" title="4、 社交网络"></a>4、 社交网络</h3><p>赞/踩，粉丝，共同好友/喜好，推送，下拉刷新等是社交网站必备的功能。由于社交网站 <strong>访问量通常比较大</strong>，而且 <strong>传统的数据库</strong> 不太适合保存这类数据，<code>Redis</code> 提供的 <strong>数据结构</strong> 可以相对比较容易实现这些功能。<br></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/05/07/Redis简述及主从模式/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/17/mongo与cassandra对比/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -394,7 +715,7 @@
 <li><strong>通过分布式 hash 表放置数据</strong>：在默认分区策略中，每个节点都对应一个 hash 值，用于存储一定范围内的分区键的数据。</li>
 <li><strong>可插拔的分区</strong>：可添加或者删除节点，但是保证数据不会丢失。</li>
 <li><strong>可配置的放置策略</strong>：可配置不同的策略用于分布副本。</li>
-<li><p><strong>可配置的一致性</strong>：对读写操作均可配置不同的一致性级别。</p>
+<li><p><strong>可配置的一致性</strong>：对读写操作均可配置不同的一致性级别。</p></li></ul>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/04/17/mongo与cassandra对比/#more" rel="contents">
@@ -404,7 +725,7 @@
           <!--/noindex-->
         
       
-    </li></ul></div>
+    </div>
     
     
     
@@ -481,7 +802,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -492,7 +813,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -503,7 +824,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
