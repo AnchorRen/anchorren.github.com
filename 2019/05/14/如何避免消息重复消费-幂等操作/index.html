@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="分布式,幂等,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="目录 幂等含义 由来背景 乐观锁方案 唯一ID + 指纹码方案 redis原子操作方案  幂等含义我们先了解一下什么叫幂等？在分布式应用中，幂等是非常重要的，也就是相同条件下对一个业务的操作，不管操作多少次，结果都是一样。 由来背景为什么要有幂等这种场景？ 因为在大的系统中，都是分布式部署，如：订单业务 和 库存业务有可能都是独立部署的，都是单独的服务。用户下订单，会调用到订单服务和库存服务。">
+<meta name="keywords" content="分布式,幂等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何避免消息重复消费-幂等操作">
+<meta property="og:url" content="http://yoursite.com/2019/05/14/如何避免消息重复消费-幂等操作/index.html">
+<meta property="og:site_name" content="renhexin&#39;s blog">
+<meta property="og:description" content="目录 幂等含义 由来背景 乐观锁方案 唯一ID + 指纹码方案 redis原子操作方案  幂等含义我们先了解一下什么叫幂等？在分布式应用中，幂等是非常重要的，也就是相同条件下对一个业务的操作，不管操作多少次，结果都是一样。 由来背景为什么要有幂等这种场景？ 因为在大的系统中，都是分布式部署，如：订单业务 和 库存业务有可能都是独立部署的，都是单独的服务。用户下订单，会调用到订单服务和库存服务。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/05/14/如何避免消息重复消费-幂等操作/1.png">
+<meta property="og:updated_time" content="2019-05-14T15:15:29.758Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何避免消息重复消费-幂等操作">
+<meta name="twitter:description" content="目录 幂等含义 由来背景 乐观锁方案 唯一ID + 指纹码方案 redis原子操作方案  幂等含义我们先了解一下什么叫幂等？在分布式应用中，幂等是非常重要的，也就是相同条件下对一个业务的操作，不管操作多少次，结果都是一样。 由来背景为什么要有幂等这种场景？ 因为在大的系统中，都是分布式部署，如：订单业务 和 库存业务有可能都是独立部署的，都是单独的服务。用户下订单，会调用到订单服务和库存服务。">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/14/如何避免消息重复消费-幂等操作/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/14/如何避免消息重复消费-幂等操作/">
+
+
+
+
+
+  <title>如何避免消息重复消费-幂等操作 | renhexin's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">renhexin's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/14/如何避免消息重复消费-幂等操作/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="RenHexin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renhexin's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">如何避免消息重复消费-幂等操作</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-14T22:33:07+08:00">
+                2019-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/分布式/" itemprop="url" rel="index">
+                    <span itemprop="name">分布式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><ol>
+<li>幂等含义</li>
+<li>由来背景</li>
+<li>乐观锁方案</li>
+<li>唯一ID + 指纹码方案</li>
+<li>redis原子操作方案</li>
+</ol>
+<h1 id="幂等含义"><a href="#幂等含义" class="headerlink" title="幂等含义"></a>幂等含义</h1><p>我们先了解一下什么叫幂等？在分布式应用中，幂等是非常重要的，也就是相同条件下对一个业务的操作，不管操作多少次，结果都是一样。</p>
+<h1 id="由来背景"><a href="#由来背景" class="headerlink" title="由来背景"></a>由来背景</h1><p><strong>为什么要有幂等这种场景？</strong></p>
+<p>因为在大的系统中，都是分布式部署，如：订单业务 和 库存业务有可能都是独立部署的，都是单独的服务。用户下订单，会调用到订单服务和库存服务。</p>
+<p><img src="/2019/05/14/如何避免消息重复消费-幂等操作/1.png" alt="æµ·éè®¢åäº§ççä¸å¡é«å³°æï¼å¦ä½é¿åæ¶æ¯çéå¤æ¶è´¹ï¼"></p>
+<p>因为分布式部署，很有可能在调用库存服务时，因为网络等原因，订单服务调用失败，但其实库存服务已经处理完成，只是返回给订单服务处理结果时出现了异常。这个时候一般系统会作补偿方案，也就是订单服务再此放起库存服务的调用,库存减1.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update t_goods set count = count -1 where good_id=2</span><br></pre></td></tr></table></figure>
+<p>这样就出现了问题，其实上一次调用已经减了1，只是订单服务没有收到处理结果。现在又调用一次，又要减1，这样就不符合业务了，多扣了。</p>
+<p>幂等这个概念就是，不管库存服务在相同条件下调用几次，处理结果都一样。这样才能保证补偿方案的可行性。<br><a id="more"></a></p>
+<h1 id="乐观锁方案"><a href="#乐观锁方案" class="headerlink" title="乐观锁方案"></a>乐观锁方案</h1><p>借鉴数据库的乐观锁机制，如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update t_goods set count = count -1 , version = version + 1 where good_id=2 and version = 1</span><br></pre></td></tr></table></figure>
+<p>根据version版本，也就是在操作库存前先获取当前商品的version版本号，然后操作的时候带上此version号。我们梳理下，我们第一次操作库存时，得到version为1，调用库存服务version变成了2；但返回给订单服务出现了问题，订单服务又一次发起调用库存服务，当订单服务传如的version还是1，再执行上面的sql语句时，就不会执行；因为version已经变为2了，where条件就不成立。这样就保证了不管调用几次，只会真正的处理一次。</p>
+<h1 id="唯一ID-指纹码"><a href="#唯一ID-指纹码" class="headerlink" title="唯一ID + 指纹码"></a>唯一ID + 指纹码</h1><p>原理就是利用数据库主键去重，业务完成后插入主键标识</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select count(1) from t_check where ID=唯一ID + 指纹码</span><br></pre></td></tr></table></figure>
+<ul>
+<li>唯一ID就是业务表的唯一的主键，如商品ID</li>
+<li>指纹码就是为了区别每次正常操作的码，每次操作时生成指纹码；可以用时间戳+业务编号的方式。</li>
+</ul>
+<p>上面的sql语句：</p>
+<ul>
+<li>返回如果为0 表示没有操作过，那业务操作后就可以insert into t_check(唯一ID+指纹码)</li>
+<li>返回如果大于0 表示操作过，就直接返回</li>
+</ul>
+<p>好处：实现简单</p>
+<p>坏处：高并发下数据库瓶颈</p>
+<p>解决方案：根据ID进行分库分表进行算法路由</p>
+<h1 id="redis原子操作"><a href="#redis原子操作" class="headerlink" title="redis原子操作"></a>redis原子操作</h1><p>利用redis的原子操作，做个操作完成的标记。这个性能就比较好。但会遇到一些问题。</p>
+<p>第一：我们是否需要把业务结果进行数据落库，如果落库，关键解决的问题时数据库和redis操作如何做到原子性？</p>
+<blockquote>
+<p>这个意思就是库存减1了，但redis进行操作完成标记时，失败了怎么办？也就是一定要保证落库和redis 要么一起成功，要么一起失败</p>
+</blockquote>
+<p>第二：如果不进行落库，那么都存储到缓存中，如何设置定时同步策略？</p>
+<blockquote>
+<p>这个意思就是库存减1，不落库，直接先操作redis操作完成标记，然后由另外的同步服务进行库存落库，这个就是增加了系统复杂性，而且同步策略如何设置</p>
+</blockquote>
+<p>以上我们结束了幂等相关的解决方案，以后文章中我们会重点介绍方案的实现。</p>
+<p>原文链接：<a href="https://www.toutiao.com/i6666219332915167756" target="_blank" rel="noopener">https://www.toutiao.com/i6666219332915167756</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/分布式/" rel="tag"># 分布式</a>
+          
+            <a href="/tags/幂等/" rel="tag"># 幂等</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/14/如何保障消息中间件消息投递成功/" rel="next" title="如何保证消息中间件100%消息投递成功">
+                <i class="fa fa-chevron-left"></i> 如何保证消息中间件100%消息投递成功
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">RenHexin</p>
+              <p class="site-description motion-element" itemprop="description">Never Settle</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#目录"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#幂等含义"><span class="nav-number">2.</span> <span class="nav-text">幂等含义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#由来背景"><span class="nav-number">3.</span> <span class="nav-text">由来背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#乐观锁方案"><span class="nav-number">4.</span> <span class="nav-text">乐观锁方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#唯一ID-指纹码"><span class="nav-number">5.</span> <span class="nav-text">唯一ID + 指纹码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#redis原子操作"><span class="nav-number">6.</span> <span class="nav-text">redis原子操作</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RenHexin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
