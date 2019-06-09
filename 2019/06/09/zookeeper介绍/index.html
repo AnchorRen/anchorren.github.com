@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="zookeeper,分布式,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Zookeeper介绍进入Zookeeper官网，第一句话就是：Apache ZooKeeper致力于开发和维护一个支持高度可靠的分布式协调的开源服务器。一句话说明了zookeeper的作用和特点，作用就是分布式协调服务器，特点是高可靠。 zookeeper是什么？ 官网给出的定义是：ZooKeeper是一个集中式的服务，用于维护配置信息、命名、提供分布式同步服务和提供组服务。所有这些服务都以某种">
+<meta name="keywords" content="zookeeper,分布式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zookeeper介绍及使用">
+<meta property="og:url" content="http://yoursite.com/2019/06/09/zookeeper介绍/index.html">
+<meta property="og:site_name" content="renhexin&#39;s blog">
+<meta property="og:description" content="Zookeeper介绍进入Zookeeper官网，第一句话就是：Apache ZooKeeper致力于开发和维护一个支持高度可靠的分布式协调的开源服务器。一句话说明了zookeeper的作用和特点，作用就是分布式协调服务器，特点是高可靠。 zookeeper是什么？ 官网给出的定义是：ZooKeeper是一个集中式的服务，用于维护配置信息、命名、提供分布式同步服务和提供组服务。所有这些服务都以某种">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/06/09/zookeeper介绍/zknamespace.png">
+<meta property="og:image" content="http://yoursite.com/2019/06/09/zookeeper介绍/zkservice.png">
+<meta property="og:updated_time" content="2019-06-09T13:07:04.156Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="zookeeper介绍及使用">
+<meta name="twitter:description" content="Zookeeper介绍进入Zookeeper官网，第一句话就是：Apache ZooKeeper致力于开发和维护一个支持高度可靠的分布式协调的开源服务器。一句话说明了zookeeper的作用和特点，作用就是分布式协调服务器，特点是高可靠。 zookeeper是什么？ 官网给出的定义是：ZooKeeper是一个集中式的服务，用于维护配置信息、命名、提供分布式同步服务和提供组服务。所有这些服务都以某种">
+<meta name="twitter:image" content="http://yoursite.com/2019/06/09/zookeeper介绍/zknamespace.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/06/09/zookeeper介绍/">
+
+
+
+
+
+  <title>zookeeper介绍及使用 | renhexin's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">renhexin's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/09/zookeeper介绍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="RenHexin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renhexin's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">zookeeper介绍及使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-09T11:50:00+08:00">
+                2019-06-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/zookeeper/" itemprop="url" rel="index">
+                    <span itemprop="name">zookeeper</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Zookeeper介绍"><a href="#Zookeeper介绍" class="headerlink" title="Zookeeper介绍"></a>Zookeeper介绍</h1><p>进入Zookeeper官网，第一句话就是：Apache ZooKeeper致力于开发和维护一个<code>支持高度可靠</code>的<code>分布式协调</code>的开源服务器。一句话说明了zookeeper的作用和特点，作用就是<code>分布式协调服务器</code>，特点是<code>高可靠</code>。</p>
+<p>zookeeper是什么？</p>
+<p>官网给出的定义是：ZooKeeper是一个集中式的服务，用于<code>维护配置信息</code>、<code>命名</code>、<code>提供分布式同步服务</code>和<code>提供组服务</code>。所有这些服务都以某种形式由分布式应用程序使用。如要要实现这些服务，需要做大量工作来修复不可避免的bug和竞争条件。由于实现这些很困难，应用程序最初通常会节省这些服务，这使得它们在出现变更时变得脆弱，并且难以管理。即使这些服务顺利完成，这些服务的不同实现在部署应用程序时也会导致管理和运维的复杂性。为了解决这些问题，zookeeper应运而生，通过一个独立的应用降低了分布式应用程序的开发难度和工作量。</p>
+<p>ZooKeeper诞生于Yahoo，后转入Apache孵化，最终孵化成Apache的顶级项目，是Hadoop和Hbase的重要组件。</p>
+<h1 id="Zookeeper使用场景"><a href="#Zookeeper使用场景" class="headerlink" title="Zookeeper使用场景"></a>Zookeeper使用场景</h1><ul>
+<li><strong>服务注册与发现</strong></li>
+</ul>
+<p>利用Znode和Watcher机制，可以实现分布式服务的注册和发现。所有机器约定在父目录下创建临时目录节点，然后监听父目录节点下的子节点变化。一旦有机器挂掉，该机器与 ZooKeeper 的连接断开，其所创建的临时目录节点也被删除，所有其他机器都收到通知：某个节点被删除了。阿里的分布式RPC框架Dubbo就可以使用zookeeper作为注册中心。</p>
+<ul>
+<li><p><strong>配置中心</strong></p>
+<p>通过把分布式服务的配置放在zookeeper的znode中，分布式应用的机器到zookeeper的znode中读取配置应用到系统中即可。此外，利用zookeeper的watcher机制，如果配置（znode）发生改变，zookeeper通知各个机器配置信息已经被修改，各机器通过刷新来获取到最新的配置。<a href="https://blog.csdn.net/CSDN_Stephen/article/details/78856323" target="_blank" rel="noopener">Spring Cloud Config Zookeeper</a> ，就实现了基于 Zookeeper 的 Spring Cloud Config 的实现，提供配置中心的服务。</p>
+<a id="more"></a></li>
+<li><strong>集群节点监控</strong></li>
+</ul>
+<p>集群环境下多节点，部分节点可能因为网络故障或机器故障导致无法连接、无法正常工作，为保证集群中的节点都能正常访问，需要把异常节点从集群中剔除。通过使用zookeeper的短暂节点和watcher机制，即可实现该功能。</p>
+<ul>
+<li><strong>分布式锁</strong></li>
+</ul>
+<p>分布式锁可以分为两类，一类是<code>保持资源独占</code>，另一类是<code>控制时序</code>。</p>
+<p><code>保持资源独占</code>，就是所有尝试获取这个锁的client，最终只有一个可以成功获取。例如分布式服务的定时任务。通常的做法是把zookeeper上的一个znode看作是一把锁，通过create znode的方式来实现。所有client都去创建 /distribute_lock 节点，最终成功创建的那个client就拥有了这把锁。用完删除掉自己创建的 /distribute_lock节点就释放出锁。</p>
+<p><code>控制时序</code>，就是所有尝试获取这个锁的client，最终都要安排执行，但是要保持全局先后时序。做法和上面基本类似，只是这里 /distribute_lock 已经预先存在，客户端在它下面创建<code>临时有序节点</code>(这个可以通过节点的属性控制：CreateMode.EPHEMERAL_SEQUENTIAL)。编号最小的获得锁并执行，用完删除，后面继续。</p>
+<ul>
+<li><strong>统一命名服务</strong></li>
+</ul>
+<p>命名服务是指通过指定的名字来获取资源或服务的地址，利用zk创建一个全局的路径，即时唯一的路径，这个路径就可以作为一个名字，指向集群中机器或者提供服务的地址，又或者一个远程的对象等。</p>
+<ul>
+<li><strong>Master 选举</strong></li>
+</ul>
+<p>基于 Zookeeper 实现分布式协调，从而实现主从的选举。这个在 Kafka中有使用到。</p>
+<ul>
+<li><strong>队列管理</strong></li>
+</ul>
+<p>两种类型的队列。</p>
+<p>1、<code>同步队列</code>。当一个队列的成员都聚齐时，这个队列才可用，否则一直等待。在约定的目录下创建临时目录节点，监听节点数目是否是我们要求的数目。</p>
+<p>2、 <code>FIFO队列</code>。和分布式锁服务中的控制时序的场景基本原理一致，入列有编号，出列按编号。创建 PERSISTENT_SEQUENTIAL 节点，创建成功时 Watcher 通知等待的队列，队列删除序列号最小的节点以消费。此场景下，znode 用于消息存储，znode 存储的数据就是消息队列中的消息内容，SEQUENTIAL 序列号就是消息的编号，按序取出即可。由于创建的节点是持久化的，所以不必担心队列消息丢失的问题。</p>
+<h1 id="zookeeper特点"><a href="#zookeeper特点" class="headerlink" title="zookeeper特点"></a>zookeeper特点</h1><p><strong>全局一致性</strong>：每个server保存一份相同的副本，client不论连接到哪个Server，得到的数据都是一致的。</p>
+<p><strong>顺序性</strong>：一个client上消息a在消息b前发布，则在所有Server上消息a都将在消息b前被发布。</p>
+<p><strong>原子性</strong>：数据更新请求只能成功或者失败，没有中间状态。</p>
+<p><strong>实时性</strong>：Zookeeper保证client在一定时间范围内读到最新的数据。但由于网络延时等原因，Zookeeper不能保证两个客户端能同时得到刚更新的数据，如果需要最新数据，应该在读数据之前调用sync()接口。</p>
+<p><strong>可靠性：</strong>一旦client更新了节点数据，该数据将从那时起一直持续到client再次覆盖更新为止。</p>
+<p><strong>主从模式</strong>：一个领导者(Leader)，多个跟随者(Follower)组成的集群。</p>
+<p><strong>半数存活</strong>：集群中<strong>只要有半数以上节点存活</strong>，Zookeeper集群就能正常服务。</p>
+<h1 id="Zookeeper-的设计目标？"><a href="#Zookeeper-的设计目标？" class="headerlink" title="Zookeeper 的设计目标？"></a>Zookeeper 的设计目标？</h1><p><strong>简单的数据结构</strong></p>
+<p>Zookeeper 使得分布式程序能够通过一个共享的树形结构的名字空间来进行相互协调，即 Zookeeper 服务器内存中的数据模型由一系列被称为 ZNode 的数据节点组成，Zookeeper 将全量的数据存储在内存中，以此来提高服务器吞吐、减少延迟的目的。</p>
+<p><strong>有副本的</strong></p>
+<p>可以构建集群 Zookeeper 集群通常由一组机器构成，组成 Zookeeper 集群的而每台机器都会在内存中维护当前服务器状态，并且每台机器之间都相互通信。</p>
+<p><strong>顺序访问</strong></p>
+<p>对于来自客户端的每个更新请求，Zookeeper 都会分配一个全局唯一的递增编号，这个编号反映了所有事务操作的先后顺序。</p>
+<p><strong>高性能</strong></p>
+<p>Zookeeper 和 Redis 一样全量数据存储在内存中，100%读请求压测 QPS 12-13W 。</p>
+<h1 id="zookeeper工作原理"><a href="#zookeeper工作原理" class="headerlink" title="zookeeper工作原理"></a>zookeeper工作原理</h1><p><strong>1、Zookeeper 的核心是原子广播，这个机制保证了各个Server之间的同步。</strong></p>
+<p>实现这个机制的协议叫做Zab协议。Zab协议有两种模式，它们分别是恢复模式（选主）和 广播模式（同步）。当服务启动或者在领导者崩溃后，Zab就进入了恢复模式，当领导者被选举出来，且大多数Server完成了和leader的状态同步以 后，恢复模式就结束了。状态同步保证了leader和Server具有相同的系统状态。</p>
+<p><strong>2、为 了保证事务的顺序一致性，zookeeper采用递增的事务id号（zxid）来标识事务。</strong></p>
+<p>所有的提议（proposal）都在被提出的时候加上了 zxid。实现中zxid是一个64位的数字，它高32位是epoch用来标识leader关系是否改变，每次一个leader被选出来，它都会有一个新 的epoch，标识当前属于那个leader的统治时期。低32位用于递增计数。</p>
+<p>每个Server在工作过程中有三种状态：</p>
+<ul>
+<li>LOOKING：当前Server不知道leader是谁，正在搜寻</li>
+<li>LEADING：当前Server即为选举出来的leader</li>
+<li>FOLLOWING：leader已经选举出来，当前Server与之同步</li>
+</ul>
+<h1 id="zookeeper数据模型"><a href="#zookeeper数据模型" class="headerlink" title="zookeeper数据模型"></a>zookeeper数据模型</h1><p>zookeeper的数据存储于Unix文件系统很类似，整体为一个tree，每个节点为一个znode，每个znode可以存储1M数据，每个znode通过其路径唯一标志。</p>
+<p><img src="/2019/06/09/zookeeper介绍/zknamespace.png" alt></p>
+<h1 id="zookeeper节点类型"><a href="#zookeeper节点类型" class="headerlink" title="zookeeper节点类型"></a>zookeeper节点类型</h1><ul>
+<li><p>PERSISTENT 持久节点</p>
+<blockquote>
+<p>创建之后一直存在，除非有删除操作，创建节点的客户端会话失效也不影响此节点。</p>
+</blockquote>
+</li>
+<li><p>PERSISTENT_SEQUENTIAL 持久顺序节点</p>
+<blockquote>
+<p>跟持久一样，就是父节点在创建下一级子节点的时候，记录每个子节点创建的先后顺序，会给每个子节点名加上一个数字后缀。</p>
+</blockquote>
+</li>
+<li><p>EPHEMERAL 临时节点</p>
+<blockquote>
+<p>创建客户端会话失效（注意是会话失效，不是连接断了），节点也就没了。不能建子节点。</p>
+</blockquote>
+</li>
+<li><p>EPHEMERAL_SEQUENTIAL 临时顺序节点</p>
+<blockquote>
+<p>基本特性同临时节点，增加了顺序属性，节点名后边会追加一个由父节点维护的自增整型数字。</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="zookeeper的通知机制"><a href="#zookeeper的通知机制" class="headerlink" title="zookeeper的通知机制"></a>zookeeper的通知机制</h1><p>Zookeeper 允许客户端向服务端的某个 znode 注册一个 Watcher 监听，当服务端的一些指定事件触发了这个 Watcher ，服务端会向指定客户端发送一个事件通知来实现分布式的通知功能，然后客户端根据 Watcher 通知状态和事件类型做出业务上的改变。</p>
+<p>Watcher 的特性总结：</p>
+<ul>
+<li><p>1、一次性。</p>
+<blockquote>
+<p>无论是服务端还是客户端，一旦一个 Watcher 被触发， Zookeeper 都会将其从相应的存储中移除。这样的设计有效的减轻了服务端的压力，不然对于更新非常频繁的节点，服务端会不断的向客户端发送事件通知，无论对于网络还是服务端的压力都非常大。</p>
+<p>如果我们使用 <a href="https://curator.apache.org/" target="_blank" rel="noopener">Apache Curator</a> 作为操作 Zookeeper 的客户端，它可以帮我们自动透明的实现持续的 watch 操作，非常方便。</p>
+</blockquote>
+</li>
+<li><p>2、客户端串行执行。</p>
+<blockquote>
+<p>客户端 Watcher 回调的过程是一个串行同步的过程。</p>
+</blockquote>
+</li>
+<li><p>3、轻量级 Watch 机制。</p>
+<blockquote>
+<ul>
+<li>Watcher 通知非常简单，只会告诉客户端发生了事件，而不会说明事件的具体内容。</li>
+<li>客户端向服务端注册 Watcher 的时候，并不会把客户端真实的 Watcher 对象实体传递到服务端，仅仅是在客户端请求中使用<code>boolean</code> 类型属性进行了标记。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>4、Watcher event 异步发送 Watcher 的通知事件从 Server 发送到Client 是异步的，这就存在一个问题，不同的客户端和服务器之间通过Socket 进行通信，由于网络延迟或其他因素导致客户端在不通的时刻监听到事件，由于 Zookeeper 本身提供了 ordering guarantee ，即客户端监听事件后，才会感知它所监视 znode 发生了变化。所以我们使用 Zookeeper 不能期望能够监控到节点每次的变化。<strong>Zookeeper 只能保证最终的一致性，而无法保证强一致性</strong>。</p>
+</li>
+<li><p>5、可以注册 Watcher 的操作：getData、exists、getChildren 。</p>
+</li>
+<li><p>6、可以触发 Watcher 的操作：create、delete、setData 。</p>
+</li>
+<li><p>7、当一个 Client 连接到一个新的服务器上时，watch 将会被以任意会话事件触发。当与一个服务器失去连接的时候，是无法接收到 watch 的。而当 Client 重新连接时，如果需要的话，所有先前注册过的watch ，都会被重新注册。通常这是完全透明的。只有在一个特殊情况下，watch 可能会丢失：对于一个未创建的 znode 的 exists watch ，如果在客户端断开连接期间被创建了，并且随后在客户端连接上之前又删除了，这种情况下，这个 watch 事件可能会被丢失。</p>
+</li>
+</ul>
+<p>整个流程如下：</p>
+<ul>
+<li>第一步，客户端注册 Watcher 。</li>
+<li>第二步，服务端处理 Watcher 。</li>
+<li>第三步，客户端回调 Watcher 。</li>
+</ul>
+<h1 id="zookeeper权限控制机制"><a href="#zookeeper权限控制机制" class="headerlink" title="zookeeper权限控制机制"></a>zookeeper权限控制机制</h1><p>Zookeeper 采用 ACL（Access Control List）访问控制列表。包括三个方面：</p>
+<ul>
+<li><p>权限模式（Scheme）</p>
+<blockquote>
+<ul>
+<li>IP ：从 IP 地址粒度进行权限控制</li>
+<li>【常用】Digest ：最常用，用类似于 <code>username:password</code> 的权限标识来进行权限配置，便于区分不同应用来进行权限控制。</li>
+<li>World ：最开放的权限控制方式，是一种特殊的 digest 模式，只有一个权限标识 <code>“world:anyone”</code> 。</li>
+<li>Super ：超级用户。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>授权对象</p>
+<blockquote>
+<p>授权对象指的是权限赋予的用户或一个指定实体，例如 IP 地址或是机器等。</p>
+</blockquote>
+</li>
+<li><p>权限 Permission</p>
+<blockquote>
+<ul>
+<li>CREATE ：数据节点创建权限，允许授权对象在该 znode 下创建子节点。</li>
+<li>DELETE ：子节点删除权限，允许授权对象删除该数据节点的子节点。</li>
+<li>READ ：数据节点的读取权限，允许授权对象访问该数据节点并读取其数据内容或子节点列表等。</li>
+<li>WRITE ：数据节点更新权限，允许授权对象对该数据节点进行更新操作。</li>
+<li>ADMIN ：数据节点管理权限，允许授权对象对该数据节点进行 ACL 相关设置操作。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h1 id="zookeeper集群"><a href="#zookeeper集群" class="headerlink" title="zookeeper集群"></a>zookeeper集群</h1><p>Zookeeper 集群，是一个由多个 Server 组成，一个 Leader，多个 Follower。（这个不同于我们常见的 Master/Slave 模式）Leader 为客户端服务器提供读写服务，除了 Leader 外其他的机器只能提供读服务。</p>
+<p>每个 Server 保存一份数据副本全数据一致，分布式读 Follower ，写由 Leader 实施更新请求转发，由 Leader 实施更新请求顺序进行，来自同一个 Client 的更新请求按其发送顺序依次执行数据更新原子性，一次数据更新要么成功，要么失败。</p>
+<p>全局唯一数据视图，Client 无论连接到哪个 Server，数据视图都是一致的实时性，在一定事件范围内，Client 能读到最新数据。</p>
+<p><img src="/2019/06/09/zookeeper介绍/zkservice.png" alt="zookeeper"></p>
+<h2 id="集群角色"><a href="#集群角色" class="headerlink" title="集群角色"></a>集群角色</h2><p>集群中一共有三种角色：</p>
+<ul>
+<li><p>1、Leader</p>
+<blockquote>
+<ul>
+<li>事务请求的唯一调度和处理者，保证集群事务处理的顺序性。</li>
+<li>集群内部各服务的调度者。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>2、Follower</p>
+<blockquote>
+<ul>
+<li>处理客户端的非事务请求，转发事务请求给 Leader 服务器。</li>
+<li>参与事务请求 Proposal 的投票。</li>
+<li>参与 Leader 选举投票。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>3、Observer</p>
+<blockquote>
+<p>3.3.0 版本以后引入的一个服务器角色，在不影响集群事务处理能力的基础上提升集群的非事务处理能力。</p>
+<ul>
+<li>处理客户端的非事务请求，转发事务请求给 Leader 服务器</li>
+<li>不参与任何形式的投票。</li>
+</ul>
+<p>如果 ZooKeeper 集群的读取负载很高，或者客户端多到跨机房，可以设置一些 Observer 服务器，以提高读取的吞吐量。Observer 和 Follower 比较相似，只有一些小区别：</p>
+<ul>
+<li>首先 Observer 不属于法定人数，即不参加选举也不响应提议，也不参与写操作的“过半写成功”策略；</li>
+<li>其次是 Observer 不需要将事务持久化到磁盘，一旦 Observer 被重启，需要从 Leader 重新同步整个名字空间。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h1 id="zookeeper选主流程"><a href="#zookeeper选主流程" class="headerlink" title="zookeeper选主流程"></a>zookeeper选主流程</h1><p><strong>zookeeper工作状态</strong></p>
+<p>每个Server在工作过程中有四种状态：<br> LOOKING：竞选状态，当前Server不知道leader是谁，正在搜寻。<br> LEADING：领导者状态，表明当前服务器角色是leader。<br> FOLLOWING：随从状态，表明当前服务器角色是follower，同步leader状态，参与投票。<br> OBSERVING，观察状态，表明当前服务器角色是observer，同步leader状态，不参与投票。</p>
+<p><strong>选主机制</strong><br> Zookeeper的核心是原子广播，这个机制保证了各个Server之间的同步。实现这个机制的协议叫做Zab协议。Zab协议有两种模式，它们分别是恢复模式（选主）和广播模式（同步）。当服务启动或者在领导者崩溃后，Zab就进入了恢复模式，当领导者被选举出来，且大多数Server完成了和leader的状态同步以后，恢复模式就结束了。状态同步保证了leader和Server具有相同的系统状态。leader选举是保证分布式数据一致性的关键。<br> 当zk集群中的一台服务器出现以下两种情况之一时，就会开始leader选举。<br> （1）服务器初始化启动。<br> （2）服务器运行期间无法和leader保持连接。<br> 而当一台机器进入leader选举流程时，当前集群也可能处于以下两种状态。<br> （1）集群中本来就已经存在一个leader。<br> （2）集群中确实不存在leader。<br> 首先第一种情况，通常是集群中某一台机器启动比较晚，在它启动之前，集群已经正常工作，即已经存在一台leader服务器。当该机器试图去选举leader时，会被告知当前服务器的leader信息，它仅仅需要和leader机器建立连接，并进行状态同步即可。<br>下面重点看第二种情况，即集群中leader不存在的情况下如何进行leader选举。</p>
+<p><strong>重要概念</strong></p>
+<p>投票信息中包含两个最基本的信息。<br> <code>sid</code>：即server id，即配置文件中的myid，用来标识该机器在集群中的机器序号。<br> <code>zxid</code>：即zookeeper事务id号。ZooKeeper状态的每一次改变, 都对应着一个递增的Transaction id, 该id称为zxid. 由于zxid的递增性质, 如果zxid1小于zxid2, 那么zxid1肯定先于zxid2发生. 创建任意节点, 或者更新任意节点的数据, 或者删除任意节点, 都会导致Zookeeper状态发生改变, 从而导致zxid的值增加。以（sid，zxid）的形式来标识一次投票信息。例如，如果当前服务器要推举sid为1，zxid为8的服务器成为leader，那么投票信息可以表示为（1，8）</p>
+<p><strong>投票规则</strong></p>
+<p> 集群中的每台机器发出自己的投票后，也会接受来自集群中其他机器的投票。每台机器都会根据一定的规则，来处理收到的其他机器的投票，以此来决定是否需要变更自己的投票。<br> 规则如下：<br> （1）初始阶段，都会给自己投票。<br> （2）当接收到来自其他服务器的投票时，都需要将别人的投票和自己的投票进行pk，规则如下：<br> 优先检查zxid。zxid比较大的服务器优先作为leader。如果zxid相同的话，就比较sid，sid比较大的服务器作为leader。</p>
+<p><strong>举例</strong><br>假设当前集群中有5台机器组成。sid分别为1，2，3，4，5。zxid分别为9，9，9，8，8，并且此时sid为2的机器是leader。某一时刻，1和2的服务器挂掉了，集群开始进行选主。<br> 在第一次投票中，由于无法检测到集群中其他机器的状态信息，因此每台机器都将自己作为被推举的对象来进行投票。于是sid为3，4，5的机器，投票情况分别为（3，9），（4，8），（5，8）。每台机器把投票发出后，同时也会接收到来自另外两台机器的投票。<br> 对于server3来说，接收到（4，8），（5，8）的投票，对比后由于自己的zxid要大于收到的另外两个投票，因此不需要做任何变更。<br> 对于server4来说，接收到（3，9），（5，8）的投票，对比后由于（3，9）这个投票的zxid大于自己，因此需要变更投票为（3，9），然后继续将这个投票发送给另外两台机器。<br> 对于server5来说，接收到（3，9），（4，8）的投票，对比后由于（3，9）这个投票的zxid大于自己，因此需要变更投票为（3，9），然后继续将这个投票发送给另外两台机器。<br> 经过第二轮投票后，集群中的每台机器都会再次受到其他机器的投票，然后开始统计投票。判断是否有过半的机器收到相同的投票信息，如果有，那么该投票的sid会成为新的leader。</p>
+<p>机器总数为5台，server3，4，5都收到投票（3，9）。因此server3成为leader。</p>
+<h2 id="集群安装"><a href="#集群安装" class="headerlink" title="集群安装"></a>集群安装</h2><p>以最新的3.4.14版本为例</p>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>JDK　　　 ：1.8.0_192 （要求1.6+）</p>
+<p>ZooKeeper：3.4.14</p>
+<p>主机数：3</p>
+<table>
+<thead>
+<tr>
+<th>IP地址</th>
+<th>myid</th>
+<th>ZooKeeper</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>192.168.8.11</td>
+<td>1</td>
+<td>server.1</td>
+</tr>
+<tr>
+<td>192.168.8.12</td>
+<td>2</td>
+<td>server.2</td>
+</tr>
+<tr>
+<td>192.168.8.13</td>
+<td>3</td>
+<td>server.3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h3><p>1、下载安装包zookeeper-3.4.14.tar.gz</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf zookeeper-3.4.14.tar.gz -C /opt/software/zookeeper</span><br></pre></td></tr></table></figure>
+<p>2、拷贝配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /opt/software/zookeeper/conf/</span><br><span class="line">cp zoo_sample.cfg zoo.cfg</span><br></pre></td></tr></table></figure>
+<p>3、修改配置文件zoo.cfg</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># The number of milliseconds of each tick</span><br><span class="line">tickTime=2000</span><br><span class="line"># The number of ticks that the initial </span><br><span class="line"># synchronization phase can take</span><br><span class="line">initLimit=10</span><br><span class="line"># The number of ticks that can pass between </span><br><span class="line"># sending a request and getting an acknowledgement</span><br><span class="line">syncLimit=5</span><br><span class="line"># the directory where the snapshot is stored.</span><br><span class="line"># do not use /tmp for storage, /tmp here is just </span><br><span class="line"># example sakes.</span><br><span class="line">dataDir=/opt/datastore/zookeeper</span><br><span class="line"># the port at which the clients will connect</span><br><span class="line">clientPort=2181</span><br><span class="line">server.1=192.168.8.11:2888:3888</span><br><span class="line">server.2=192.168.8.12:2888:3888</span><br><span class="line">server.3=192.168.8.13:2888:3888</span><br></pre></td></tr></table></figure>
+<p>4、创建myid文件</p>
+<p>在节点配置的dataDir指定的目录下，创建一个myid文件，里面内容为一个数字，用来标识当前主机，zoo.cfg文件中配置server.X，则myid文件中就输入这个数字X。其中，与本机IP相同的server.X对应的X即为本机myid中值，这里master节点为 1。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /opt/datastore/zookeeper</span><br><span class="line">cd /opt/datastore/zookeeper</span><br><span class="line">touch myid</span><br><span class="line">echo "1" &gt; myid</span><br></pre></td></tr></table></figure>
+<p>5、修改日志配置</p>
+<p>日志配置文件为conf/log4j.properties，修改日志输出为文件。修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zookeeper.root.logger=INFO, CONSOLE</span><br></pre></td></tr></table></figure>
+<p>为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zookeeper.root.logger=INFO, ROLLINGFILE</span><br></pre></td></tr></table></figure>
+<p>修改日志滚动样式。修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log4j.appender.ROLLINGFILE=org.apache.log4j.RollingFileAppender</span><br></pre></td></tr></table></figure>
+<p>为每天一个log日志文件，而不是一直输出在同一个log文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log4j.appender.ROLLINGFILE=org.apache.log4j.DailyRollingFileAppender</span><br></pre></td></tr></table></figure>
+<p>修改bin/zkEvn.sh</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if [ "x$&#123;ZOO_LOG_DIR&#125;" = "x" ]</span><br><span class="line">then</span><br><span class="line">    ZOO_LOG_DIR="."</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [ "x$&#123;ZOO_LOG4J_PROP&#125;" = "x" ]</span><br><span class="line">then</span><br><span class="line">    ZOO_LOG4J_PROP="INFO,CONSOLE"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>为</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if [ "x$&#123;ZOO_LOG_DIR&#125;" = "x" ]</span><br><span class="line">then</span><br><span class="line">    ZOO_LOG_DIR="/var/log/zookeeper"</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [ "x$&#123;ZOO_LOG4J_PROP&#125;" = "x" ]</span><br><span class="line">then</span><br><span class="line">    ZOO_LOG4J_PROP="INFO,ROLLINGFILE"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>6、在server2和server3上重复1-5进行配置。</p>
+<p>7、集群启动</p>
+<p> 在每个节点上，按照 master、 slave1 、 slave2的顺序依次执行如下命令启动服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/opt/software/zookeeper/bin/zkServer.sh start</span><br></pre></td></tr></table></figure>
+<p>并用命令查看启动状态</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/opt/software/zookeeper/bin/zkServer.sh status</span><br></pre></td></tr></table></figure>
+<h1 id="使用Apache-Curator操作zookeeper"><a href="#使用Apache-Curator操作zookeeper" class="headerlink" title="使用Apache Curator操作zookeeper"></a>使用Apache Curator操作zookeeper</h1><p>对应zookeeper版本3.4.14。</p>
+<h2 id="pom文件"><a href="#pom文件" class="headerlink" title="pom文件"></a>pom文件</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.5.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">relativePath</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.rhx<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>demo<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>zookeeper demo<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">zookeeper.version</span>&gt;</span>3.4.14<span class="tag">&lt;/<span class="name">zookeeper.version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">curator.version</span>&gt;</span>2.13.0<span class="tag">&lt;/<span class="name">curator.version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">commons.lang.version</span>&gt;</span>2.6<span class="tag">&lt;/<span class="name">commons.lang.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.30<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-lang<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-lang<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;commons.lang.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.zookeeper<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>zookeeper<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;zookeeper.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-log4j12<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-recipes<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;curator.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="application-properties"><a href="#application-properties" class="headerlink" title="application.properties"></a>application.properties</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">zookeeper.enabled:true</span><br><span class="line">zookeeper.server:192.168.34.11:2181</span><br><span class="line"># 指定一个Zookeeper的根路径，作用是实现业务之间的隔离</span><br><span class="line">zookeeper.namespace:zookeeper-demo</span><br><span class="line">#zkCli.sh acl 命令 addauth digest mpush rt:rt</span><br><span class="line">zookeeper.digest:</span><br><span class="line">#会话超时时间，单位为毫秒，默认60000ms,连接断开后，其它客户端还能请到临时节点的时间</span><br><span class="line">zookeeper.sessionTimeoutMs:1000</span><br><span class="line">#连接创建超时时间，单位为毫秒</span><br><span class="line">zookeeper.connectionTimeoutMs:6000</span><br><span class="line">#最大重试次数</span><br><span class="line">zookeeper.maxRetries:3</span><br><span class="line">#初始sleep时间 ,毫秒</span><br><span class="line">zookeeper.baseSleepTimeMs:1000</span><br></pre></td></tr></table></figure>
+<h1 id="Java-Config"><a href="#Java-Config" class="headerlink" title="Java Config"></a>Java Config</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConditionalOnProperty</span>(value = &#123;<span class="string">"zookeeper.enabled"</span>&#125;, matchIfMissing = <span class="keyword">false</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZkConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(ZkConfiguration.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;zookeeper.server&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String zookeeperServer;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>((<span class="string">"$&#123;zookeeper.sessionTimeoutMs&#125;"</span>))</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> sessionTimeoutMs;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;zookeeper.connectionTimeoutMs&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> connectionTimeoutMs;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;zookeeper.maxRetries&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> maxRetries;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;zookeeper.baseSleepTimeMs&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> baseSleepTimeMs;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;zookeeper.namespace&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String namespace;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;zookeeper.digest&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String digest;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CuratorFramework <span class="title">zkClient</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        RetryPolicy retryPolicy = <span class="keyword">new</span> ExponentialBackoffRetry(baseSleepTimeMs, maxRetries);</span><br><span class="line">        CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()</span><br><span class="line">                .connectString(zookeeperServer)</span><br><span class="line">                .retryPolicy(retryPolicy)</span><br><span class="line">                .sessionTimeoutMs(sessionTimeoutMs)</span><br><span class="line">                .connectionTimeoutMs(connectionTimeoutMs)</span><br><span class="line">                .namespace(namespace);</span><br><span class="line">        <span class="keyword">if</span> (StringUtils.isNotEmpty(digest)) &#123;</span><br><span class="line">            builder.authorization(<span class="string">"digest"</span>, digest.getBytes(Charset.defaultCharset()));</span><br><span class="line">            builder.aclProvider(<span class="keyword">new</span> ACLProvider() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> List&lt;ACL&gt; <span class="title">getDefaultAcl</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> ZooDefs.Ids.CREATOR_ALL_ACL;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> List&lt;ACL&gt; <span class="title">getAclForPath</span><span class="params">(<span class="keyword">final</span> String path)</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> ZooDefs.Ids.CREATOR_ALL_ACL;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        CuratorFramework client = builder.build();</span><br><span class="line">        client.start();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//注册链接状态监听器</span></span><br><span class="line">        client.getConnectionStateListenable().addListener(<span class="keyword">new</span> ConnectionStateListener() &#123;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stateChanged</span><span class="params">(CuratorFramework client, ConnectionState state)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (state == ConnectionState.LOST) &#123;</span><br><span class="line">                    LOGGER.info(<span class="string">"lost session with zookeeper"</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (state == ConnectionState.CONNECTED) &#123;</span><br><span class="line">                    LOGGER.info(<span class="string">"connected to zookeeper"</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (state == ConnectionState.RECONNECTED) &#123;</span><br><span class="line">                    LOGGER.info(<span class="string">"reconnected to zookeeper"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> client;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="常用方法使用示例"><a href="#常用方法使用示例" class="headerlink" title="常用方法使用示例"></a>常用方法使用示例</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZkService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(ZkService.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> CuratorFramework zkClient;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建节点及设置数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path       path</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> nodeData   data</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> createMode 创建模式</span></span><br><span class="line"><span class="comment">     *                   PERSISTENT：持久化</span></span><br><span class="line"><span class="comment">     *                   PERSISTENT_SEQUENTIAL：持久化并且带序列号</span></span><br><span class="line"><span class="comment">     *                   EPHEMERAL：临时</span></span><br><span class="line"><span class="comment">     *                   EPHEMERAL_SEQUENTIAL：临时并且带序列号</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 是否成功</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">createNode</span><span class="params">(String path, <span class="keyword">byte</span>[] nodeData, CreateMode createMode)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            zkClient.create().creatingParentsIfNeeded().withMode(createMode).forPath(path, nodeData);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">"Create node error, msg: &#123;&#125;"</span>, e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建节点(初始内容为空)</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path       path</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> createMode 创建模式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 是否成功</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">createNode</span><span class="params">(String path, CreateMode createMode)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            zkClient.create().creatingParentsIfNeeded().withMode(createMode).forPath(path);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">"Create node error, msg: &#123;&#125;"</span>, e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 删除节点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path           path</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> deleteChildren 是否删除子节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 是否成功</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">deleteNode</span><span class="params">(String path, <span class="keyword">boolean</span> deleteChildren)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (deleteChildren) &#123;</span><br><span class="line">                zkClient.delete().guaranteed().deletingChildrenIfNeeded().forPath(path);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//只能删除叶节点，否则抛异常</span></span><br><span class="line">                zkClient.delete().guaranteed().forPath(path);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">"Delete node error, msg: &#123;&#125;"</span>, e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 删除节点（及子节点）</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path path</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 是否成功</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">deleteNode</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> deleteNode(path, <span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 删除指定版本的数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path    apth</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> version 版本号</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 是否成功</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">deleteNodeWithVersion</span><span class="params">(String path, Integer version)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            zkClient.delete().guaranteed().withVersion(version).forPath(path);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">"Delete node with version error, msg: &#123;&#125;"</span>, e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置节点数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path     path</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> nodeData 节点数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 是否成功</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">setNodeData</span><span class="params">(String path, <span class="keyword">byte</span>[] nodeData)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            zkClient.setData().forPath(path, nodeData);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">"Set node data error, msg: &#123;&#125;"</span>, e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置节点指定版本的数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path     path</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> nodeData 节点数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 是否成功</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">setNodeDataWithVersion</span><span class="params">(String path, <span class="keyword">byte</span>[] nodeData, Integer version)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            zkClient.setData().withVersion(version).forPath(path, nodeData);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">"Set node data with version error, msg: &#123;&#125;"</span>, e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取节点数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path apth</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 是否成功</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] getNodeData(String path) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> zkClient.getData().forPath(path);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">"Get node data error, msg: &#123;&#125;"</span>, e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取节点stat</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path path</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Stat</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Stat <span class="title">getNodeStat</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        Stat stat = <span class="keyword">new</span> Stat();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            zkClient.getData().storingStatIn(stat).forPath(path);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">"Get node stat error, msg: &#123;&#125;"</span>, e.getMessage());</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> stat;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断节点是否存在</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path path</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 是否成功</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">istNodeExist</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        zkClient.sync();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span> != zkClient.checkExists().forPath(path);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">"Check if node exist error, msg: &#123;&#125;"</span>, e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取子节点集合</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path path</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 节点结合</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">getChildrenNodes</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        List&lt;String&gt; childrenList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            childrenList = zkClient.getChildren().forPath(path);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(<span class="string">"Get children nodes error, msg: &#123;&#125;"</span>, e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> childrenList;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/zookeeper/" rel="tag"># zookeeper</a>
+          
+            <a href="/tags/分布式/" rel="tag"># 分布式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/20/RocketMQ知识点总结/" rel="next" title="RocketMQ知识点总结">
+                <i class="fa fa-chevron-left"></i> RocketMQ知识点总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/09/zookeeper知识总结/" rel="prev" title="zookeeper知识点总结">
+                zookeeper知识点总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">RenHexin</p>
+              <p class="site-description motion-element" itemprop="description">Never Settle</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Zookeeper介绍"><span class="nav-number">1.</span> <span class="nav-text">Zookeeper介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Zookeeper使用场景"><span class="nav-number">2.</span> <span class="nav-text">Zookeeper使用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#zookeeper特点"><span class="nav-number">3.</span> <span class="nav-text">zookeeper特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Zookeeper-的设计目标？"><span class="nav-number">4.</span> <span class="nav-text">Zookeeper 的设计目标？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#zookeeper工作原理"><span class="nav-number">5.</span> <span class="nav-text">zookeeper工作原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#zookeeper数据模型"><span class="nav-number">6.</span> <span class="nav-text">zookeeper数据模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#zookeeper节点类型"><span class="nav-number">7.</span> <span class="nav-text">zookeeper节点类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#zookeeper的通知机制"><span class="nav-number">8.</span> <span class="nav-text">zookeeper的通知机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#zookeeper权限控制机制"><span class="nav-number">9.</span> <span class="nav-text">zookeeper权限控制机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#zookeeper集群"><span class="nav-number">10.</span> <span class="nav-text">zookeeper集群</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#集群角色"><span class="nav-number">10.1.</span> <span class="nav-text">集群角色</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#zookeeper选主流程"><span class="nav-number">11.</span> <span class="nav-text">zookeeper选主流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#集群安装"><span class="nav-number">11.1.</span> <span class="nav-text">集群安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境准备"><span class="nav-number">11.1.1.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装配置"><span class="nav-number">11.1.2.</span> <span class="nav-text">安装配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用Apache-Curator操作zookeeper"><span class="nav-number">12.</span> <span class="nav-text">使用Apache Curator操作zookeeper</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pom文件"><span class="nav-number">12.1.</span> <span class="nav-text">pom文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#application-properties"><span class="nav-number">13.</span> <span class="nav-text">application.properties</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-Config"><span class="nav-number">14.</span> <span class="nav-text">Java Config</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用方法使用示例"><span class="nav-number">15.</span> <span class="nav-text">常用方法使用示例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RenHexin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
